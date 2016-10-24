@@ -1,8 +1,11 @@
-$font-stack:    Helvetica, sans-serif;
-$primary-color: purple;
+// $font-stack:    Helvetica, sans-serif;
+// $primary-color: purple;
 
-body {
-  font: 100% $font-stack;
-  color: $primary-color;
+// body {
+//   font: 100% $font-stack;
+//   color: $primary-color;
+// }
+
+#board-size-x, #board-size-y {
+  width: 80px;
 }
-

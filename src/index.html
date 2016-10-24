@@ -10,28 +10,25 @@
 </head>
 <body>
 
-    <select id='chosen-example'  class='form-control' data-placeholder="I'm searchable!">
-      <option></option>
-      <option value='one'>one</option>
-      <option value='two'>two</option>
-      <option value='three'>three</option>
-    </select>
+  <label>Board Width</label>
+  <select id='board-size-x'>
+    <option value='5'>5</option>
+    <option value='10'>10</option>
+    <option value='15'>15</option>
+  </select>
 
-    <br>
-    <br>
+  <label>Board Height</label>
+  <select id='board-size-y'>
+    <option value='5'>5</option>
+    <option value='10'>10</option>
+    <option value='15'>15</option>
+  </select>
 
-    <!-- <div id='test'></div> -->
+  <button id='start' class='btn btn-medium'>Start</button>
 
-    <!-- <button id='' class='btn btn-medium'><i class='glyphicon glyphicon-plus'></i></button> -->
+  <button id='quick-start' class='btn btn-medium'>Quick Start</button>
 
-<!--     <div style='position:relative;'>
-      <input id='datetime-picker'>
-    </div> -->
-
-    <button id='load-moment' class='btn btn-medium'>Let's do some timey wimey stuff</i></button>
-
-    <div id='message'></div>
-
+  <div id='game'></div>
 
 </body>
 </html>

@@ -22,14 +22,14 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015']
+          presets: ['es2015'] // shorthand for 'babel-loader?presets[]=es2015'. Only works when there's a single loader
         }
       },
-      {
-        test: /\.ts/,
-        loaders: ['ts-loader'],
-        exclude: /node_modules/
-      },
+      // {
+      //   test: /\.ts/,
+      //   loaders: ['ts-loader'],
+      //   exclude: /node_modules/
+      // },
       {
         test: /web_modules\/chosen\/.+\.(jsx|js)$/,
         loader: 'imports?jQuery=jquery,$=jquery,this=>window'
@@ -40,10 +40,14 @@ module.exports = {
         loader: 'imports?jQuery=jquery,$=jquery,this=>window'
       },
       {
+        test: /src\/js\/view-logic\.es6$/,
+        loaders: ['imports?jQuery=jquery,$=jquery,this=>window', 'babel-loader?presets[]=es2015']
+      },
+      {
         // test: /node_modules\/bootstrap\/dist\/js\/.+\.(jsx|js)$/,
         test: /.+\.(jsx|js)$/,
         // http://reactkungfu.com/2015/10/integrating-jquery-chosen-with-webpack-using-imports-loader/
-        loader: 'imports?jQuery=jquery,$=jquery,this=>window'
+        loader: 'babel-loader!imports?jQuery=jquery,$=jquery,this=>window'
       },
       {
         test: /node_modules\/moment\/locale/,
