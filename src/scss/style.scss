@@ -9,3 +9,13 @@
 #board-size-x, #board-size-y {
   width: 80px;
 }
+
+.cell {
+  position: relative;
+}
+
+.cell-image {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
