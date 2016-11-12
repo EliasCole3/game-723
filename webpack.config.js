@@ -34,6 +34,10 @@ module.exports = {
         test: /web_modules\/chosen\/.+\.(jsx|js)$/,
         loader: 'imports?jQuery=jquery,$=jquery,this=>window'
       },
+      // {
+      //   test: /web_modules\/keypress\/.+\.(jsx|js)$/,
+      //   loader: 'imports?jQuery=jquery,$=jquery,this=>window'
+      // },
       {
         // test: /node_modules\/eonasdan-bootstrap-datetimepicker\/build\/js\/bootstrap-datetimepicker.min.js$/,
         test: /web_modules\/datetime-picker\/bootstrap-datetimepicker.js/,
