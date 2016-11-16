@@ -45,7 +45,7 @@ let config = {
 
 let gamestate = {
   currentPlayer: 'player1',
-  players: ['player1', 'player2'],
+  players: ['player1', 'player2', 'player3'],
   nextUnitId: 1,
   selectedCell: {
     x: 0,
@@ -66,15 +66,16 @@ $(() => {
   $('#board-size-x').chosen(config.chosenOptions)
   $('#board-size-y').chosen(config.chosenOptions)
 
-  let test3 = new Unit(gameLogic.getNextId(gamestate), 1, 1, 1, 20, 0, 10, 10, 10)
-  console.log(test3)
+  // let test3 = new Unit(gameLogic.getNextId(gamestate), 1, 1, 1, 20, 0, 10, 10, 10)
+  // console.log(test3)
 
-  let test4 = new Warrior(gameLogic.getNextId(gamestate), 1, 1, 20, 0, 10, 10, 10, 'wargog', img_warrior)
-  console.log(test4)
+  // let test4 = new Warrior(gameLogic.getNextId(gamestate), 1, 1, 20, 0, 10, 10, 10, 'wargog', img_warrior)
+  // console.log(test4)
 
   $('#start').on('click', e => {
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
+    setNonBoardHandlers(gamestate)
   })
 
 
@@ -122,10 +123,11 @@ function startHandler(gamestate) {
   board[1][2] = new Cell(1, 2, 'water', img_water)
   board[2][2] = new Cell(2, 2, 'water', img_water)
 
-  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior)
+  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, 'player1')
   // board[2][3].image = testWarrior.backgroundImage
   // board[2][3].occupiedBy = 'unit'
   board[2][3].occupiedBy = testWarrior
+  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, 'player2')
 
   gamestate.board = board
   viewLogic.render('#game', board)
@@ -155,6 +157,27 @@ function setKeyboardHandlers(gamestate) {
 
   listener.simple_combo('down', () => {
     moveDown(gamestate)
+  })
+
+  listener.register_combo({
+    keys: 'p',
+    on_keydown: (e, countPressed, autoRepeat) => {
+      if(autoRepeat) return
+
+      $('#events').html(`p down`)
+
+      for(let x=0; x<gamestate.boardsize.x; x++) {
+        for(let y=0; y<gamestate.boardsize.y; y++) {
+          if(gamestate.board[x][y].occupiedBy) {
+            console.log(`${gamestate.board[x][y].occupiedBy.name} is owned by ${gamestate.board[x][y].occupiedBy.player}`)
+          }
+
+        }
+      }
+    },
+    on_keyup: (e, countPressed, autoRepeat) => {
+      $('#events').html(`p up`)
+    }
   })
 
 }
@@ -256,6 +279,23 @@ function anyOfTheseAreTrue(conditions) {
 }
 
 
+function setNonBoardHandlers(gamestate) {
+
+  $('#end-turn').click(e => {
+    endTurn(gamestate)
+  })
+
+
+
+
+}
+
+function endTurn(gamestate) {
+  // temporary, for testing
+  $('#events').html(`${gamestate.currentPlayer}'s turn has ended. Current player is now ${gamestate.players.next()}`)
+
+  gamestate.currentPlayer = gamestate.players[gamestate.players.current]
+}
 
 
 
