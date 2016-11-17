@@ -75,6 +75,16 @@ class Warrior extends Unit {
 
 }
 
+class Player {
+
+  constructor(username, handle, color) {
+    this.username = username
+    this.handle = handle
+    this.color = color
+  }
+
+}
+
 // function setConstructorParams() {
 
 // }
@@ -87,6 +97,6 @@ class Warrior extends Unit {
 // }
 
 
-export {Item, Cell, Blah, Unit, Warrior}
+export {Item, Cell, Blah, Unit, Warrior, Player}
 
 

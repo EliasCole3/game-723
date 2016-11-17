@@ -1,0 +1,37 @@
+todo
+------------------------
+Switch out player stings for player objects
+Redo anything that current touches player strings
+
+
+------------------------
+
+
+Unit class updates
+---------------------
+hasTakenTurn
+speed?
+itemsHeld(array of item obejcts)
+
+---------------------
+
+
+Design Decisions
+---------------------
+Full team turns or speed based turns?
+ - full teams. So speed is just number of squares to move
+
+---------------------
+
+
+Features
+---------------------
+When unit selected, show unit info
+Can't select a unit of a different player
+Determine possible move squares
+Limit movement to possible moves
+When friendly unit is selected, clicking on an enemy selects as target(if in range)
+Range finding algorithm
+non-unit map obstructions
+
+---------------------
