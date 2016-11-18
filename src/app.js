@@ -1,11 +1,13 @@
+require('./css/jquery-ui.css')
 require('./scss/style')
 require('chosen/chosen.jquery')
 require('chosen/chosen.css')
 require('bootstrap/dist/js/bootstrap.js')
 require('bootstrap/dist/css/bootstrap.css')
-let img_mountains = require('./images/moutains.png')
-let img_water = require('./images/water.png')
-let img_warrior = require('./images/warrior.png')
+
+let img_mountains = require('./images/app/moutains.png')
+let img_water = require('./images/app/water.png')
+let img_warrior = require('./images/app/warrior.png')
 
 let say = require('./js/sample1')
 let Cell = require('./js/classes.es6').Cell
@@ -15,6 +17,8 @@ let Warrior = require('./js/classes.es6').Warrior
 let Player = require('./js/classes.es6').Player
 let gameLogic = require('./js/game-logic.es6')
 let viewLogic = require('./js/view-logic.es6')
+let createMessageWindow = require('./js/windows.es6').createMessageWindow
+
 // import{Cell, Blah} from './js/classes.es6' //figure this out later
 
 let keypress = require('keypress.js')
@@ -83,6 +87,7 @@ $(() => {
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
+    createMessageWindow()
   })
 
 
@@ -98,7 +103,7 @@ function startHandler(gamestate) {
   console.log(testCell)
   // $('#game').html(`<img src='${mountains}'>`)
   $('#game').html(`<img src='${testCell.backgroundImage}'>`)
-  // let testBlah = new Blah(0, 0, 'mountains', './images/tiles/mountains.jpg')
+  // let testBlah = new Blah(0, 0, 'mountains', './images/app/tiles/mountains.jpg')
   // console.log(testBlah)
 
 
@@ -124,11 +129,10 @@ function startHandler(gamestate) {
   board[1][2] = new Cell(1, 2, 'water', img_water)
   board[2][2] = new Cell(2, 2, 'water', img_water)
 
-  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, player1)
-  // board[2][3].image = testWarrior.backgroundImage
-  // board[2][3].occupiedBy = 'unit'
+  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, player1, 5, false, [])
+
   board[2][3].occupiedBy = testWarrior
-  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2)
+  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2, 3, false, [])
 
   gamestate.board = board
   viewLogic.render('#game', board)

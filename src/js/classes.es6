@@ -45,7 +45,7 @@ class Cell {
 
 class Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player) {
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items=[]) {
     this.id = id
     this.x = x
     this.y = y
@@ -57,6 +57,9 @@ class Unit {
     this.name = name
     this.image = image
     this.player = player
+    this.hasTakenTurn = hasTakenTurn
+    this.speed = speed
+    this.items = items
   }
 
 
@@ -64,8 +67,8 @@ class Unit {
 
 class Warrior extends Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player) {
-    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player)
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items)
 
     console.log('constructing new warrior:')
     for(let prop in this) {

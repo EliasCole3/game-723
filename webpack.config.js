@@ -48,6 +48,10 @@ module.exports = {
         loaders: ['imports?jQuery=jquery,$=jquery,this=>window', 'babel-loader?presets[]=es2015']
       },
       {
+        test: /src\/js\/windows\.es6$/,
+        loaders: ['imports?jQuery=jquery,$=jquery,this=>window', 'babel-loader?presets[]=es2015']
+      },
+      {
         // test: /node_modules\/bootstrap\/dist\/js\/.+\.(jsx|js)$/,
         test: /.+\.(jsx|js)$/,
         // http://reactkungfu.com/2015/10/integrating-jquery-chosen-with-webpack-using-imports-loader/
