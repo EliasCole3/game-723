@@ -12,6 +12,7 @@ let Cell = require('./js/classes.es6').Cell
 let Blah = require('./js/classes.es6').Blah
 let Unit = require('./js/classes.es6').Unit
 let Warrior = require('./js/classes.es6').Warrior
+let Player = require('./js/classes.es6').Player
 let gameLogic = require('./js/game-logic.es6')
 let viewLogic = require('./js/view-logic.es6')
 // import{Cell, Blah} from './js/classes.es6' //figure this out later
@@ -43,9 +44,15 @@ let config = {
   }
 }
 
+let player1 = new Player('username1', 'Irritic', '#asdfer')
+let player2 = new Player('username2', 'Findled', '#asdfer')
+let player3 = new Player('username3', 'Oprahwindfury', '#asdfer')
+let player4 = new Player('username4', 'DoctorOctorock', '#asdfer')
+let player5 = new Player('username5', 'XxXSwAgL0Rd420NoSCoPeXxX', '#asdfer')
+
 let gamestate = {
-  currentPlayer: 'player1',
-  players: ['player1', 'player2', 'player3'],
+  currentPlayer: player1,
+  players: [player1, player2, player3],
   nextUnitId: 1,
   selectedCell: {
     x: 0,
@@ -113,21 +120,15 @@ function startHandler(gamestate) {
     }
   }
 
-
-
-  // board[1][1].backgroundImage = img_water
-  // board[1][2].backgroundImage = img_water
-  // board[2][2].backgroundImage = img_water
-
   board[1][1] = new Cell(1, 1, 'water', img_water)
   board[1][2] = new Cell(1, 2, 'water', img_water)
   board[2][2] = new Cell(2, 2, 'water', img_water)
 
-  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, 'player1')
+  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, player1)
   // board[2][3].image = testWarrior.backgroundImage
   // board[2][3].occupiedBy = 'unit'
   board[2][3].occupiedBy = testWarrior
-  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, 'player2')
+  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2)
 
   gamestate.board = board
   viewLogic.render('#game', board)
@@ -169,7 +170,7 @@ function setKeyboardHandlers(gamestate) {
       for(let x=0; x<gamestate.boardsize.x; x++) {
         for(let y=0; y<gamestate.boardsize.y; y++) {
           if(gamestate.board[x][y].occupiedBy) {
-            console.log(`${gamestate.board[x][y].occupiedBy.name} is owned by ${gamestate.board[x][y].occupiedBy.player}`)
+            console.log(`${gamestate.board[x][y].occupiedBy.name} is owned by ${gamestate.board[x][y].occupiedBy.player.handle}`)
           }
 
         }
@@ -292,7 +293,7 @@ function setNonBoardHandlers(gamestate) {
 
 function endTurn(gamestate) {
   // temporary, for testing
-  $('#events').html(`${gamestate.currentPlayer}'s turn has ended. Current player is now ${gamestate.players.next()}`)
+  $('#events').html(`${gamestate.currentPlayer.handle}'s turn has ended. Current player is now ${gamestate.players.next().handle}`)
 
   gamestate.currentPlayer = gamestate.players[gamestate.players.current]
 }
