@@ -48,8 +48,18 @@ function setHandlers(gamestate) {
     console.log('cell clicked, coordinates: ', x, y)
     gamestate.selectedCell.x = x
     gamestate.selectedCell.y = y
+
+    if(gamestate.board[x][y].occupiedBy) { unitClicked(x, y, gamestate) }
   })
 
+}
+
+function unitClicked(x, y, gamestate) {
+  let unit = gamestate.board[x][y].occupiedBy
+
+  console.log(unit)
+
+  $('#window-content').html(unit.name)
 }
 
 

@@ -25,6 +25,19 @@ let keypress = require('keypress.js')
 
 
 
+Array.prototype.random = function () {
+  return this[Math.floor((Math.random()*this.length))]
+}
+
+Array.prototype.popRandomElement = function () {
+  let index = Math.round(Math.random() * (this.length - 1))
+  let element = this[index]
+  if (index > -1) {
+    this.splice(index, 1)
+  }
+  return element
+}
+
 Array.prototype.next = function() {
   let nextVal = this[++this.current]
   if(nextVal !== undefined) return nextVal
@@ -129,10 +142,10 @@ function startHandler(gamestate) {
   board[1][2] = new Cell(1, 2, 'water', img_water)
   board[2][2] = new Cell(2, 2, 'water', img_water)
 
-  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, player1, 5, false, [])
+  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, player1, false, 5, [])
 
   board[2][3].occupiedBy = testWarrior
-  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2, 3, false, [])
+  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2, false, 3, [])
 
   gamestate.board = board
   viewLogic.render('#game', board)

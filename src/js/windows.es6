@@ -1,6 +1,6 @@
 import 'jquery-ui.js'
 // import 'jquery-ui.css'
-import '../css/jquery-ui'
+// import '../css/jquery-ui'
 
 function createMessageWindow() {
   let options = {
@@ -11,36 +11,38 @@ function createMessageWindow() {
   }
   createWindow(options)
   // abc.handlerMessagingWindow()
-  console.log('asdf')
 }
 
 function getMessagingWindowContent() {
-  let players = ['all', 'dave', 'elias', 'izzy', 'josh', 'nick'] // this should be more global
+  // let players = ['all', 'dave', 'elias', 'izzy', 'josh', 'nick'] // this should be more global
   let htmlString = ``
 
-  htmlString += `<ul id="tabs" class="nav nav-tabs" role="tablist">`
-  players.forEach(player => {
-    htmlString += `
-      <li role="presentation" class="tabs"><a id="tab-${player}" class='messaging-tab' data-player='${player}' href="#pane-${player}" aria-controls="pane-${player}" role="tab" data-toggle="tab">${player}</a></li>
-    `
-  })
-  htmlString += `</ul>`
+  htmlString += `<div id='window-content'></div>`
 
 
-  htmlString += `<div class="tab-content">`
-  players.forEach(player => {
-    htmlString += `
-    <div id="pane-${player}" class="tab-pane fade active" role="tabpanel">
-      <div class='message-ul-wrapper'>
-        <ul id='messages-from-${player}'></ul>
-      </div>
-      <div id='messaging-controls-${player}' class='messaging-controls'>
-        <input id='messages-to-send-${player}' class='messages-to-send' data-player='${player}'>
-        <button id='send-message-${player}' data-from='sdfg' data-to='${player}' class='btn btn-sm messages-send-button'>Send</button>
-      </div>
-    </div>`
-  })
-  htmlString += `</div>`
+  // htmlString += `<ul id="tabs" class="nav nav-tabs" role="tablist">`
+  // players.forEach(player => {
+  //   htmlString += `
+  //     <li role="presentation" class="tabs"><a id="tab-${player}" class='messaging-tab' data-player='${player}' href="#pane-${player}" aria-controls="pane-${player}" role="tab" data-toggle="tab">${player}</a></li>
+  //   `
+  // })
+  // htmlString += `</ul>`
+
+
+  // htmlString += `<div class="tab-content">`
+  // players.forEach(player => {
+  //   htmlString += `
+  //   <div id="pane-${player}" class="tab-pane fade active" role="tabpanel">
+  //     <div class='message-ul-wrapper'>
+  //       <ul id='messages-from-${player}'></ul>
+  //     </div>
+  //     <div id='messaging-controls-${player}' class='messaging-controls'>
+  //       <input id='messages-to-send-${player}' class='messages-to-send' data-player='${player}'>
+  //       <button id='send-message-${player}' data-from='sdfg' data-to='${player}' class='btn btn-sm messages-send-button'>Send</button>
+  //     </div>
+  //   </div>`
+  // })
+  // htmlString += `</div>`
 
   return htmlString
 }

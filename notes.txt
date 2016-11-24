@@ -1,17 +1,12 @@
 todo
 ------------------------
-Switch out player stings for player objects
-Redo anything that current touches player strings
-
+Add medium and large bootstrap modals
 
 ------------------------
 
 
 Unit class updates
 ---------------------
-hasTakenTurn
-speed?
-itemsHeld(array of item obejcts)
 
 ---------------------
 
@@ -35,3 +30,9 @@ Range finding algorithm
 non-unit map obstructions
 
 ---------------------
+
+
+
+
+
+
