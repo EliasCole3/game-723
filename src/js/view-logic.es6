@@ -64,15 +64,34 @@ function setHandlers(gamestate) {
 function unitClicked(x, y, gamestate) {
   let unit = gamestate.board[x][y].occupiedBy
 
-  console.log(unit)
+  if(unit.player.username !== gamestate.currentPlayer.username) {
+    logMessage('That unit doesn\'t belong to the current player')
+    return
+  }
 
   let htmlString = ``
+  htmlString += `<button id='action-move' class='btn btn-medium'>Move</button>`
+  htmlString += `<button id='action-attack' class='btn btn-medium'>Attack</button>`
+  htmlString += `<button id='action-defend' class='btn btn-medium'>Defend</button>`
+  htmlString += `<button id='action-items' class='btn btn-medium'>Items</button>`
+  htmlString += `<button id='action-magic' class='btn btn-medium'>Magic</button>`
+  htmlString += `<button id='action-special-talent' class='btn btn-medium'>Special Talent</button>`
+
+  $('#actions-window-content').html(htmlString)
+
+  gamestate.selectedUnitId = unit.id
+
+  htmlString = ``
   for(let prop in unit) {
     htmlString += `${prop}: ${unit[prop]}<br>`
   }
 
   // $('#window-content').html(unit.name)
-  $('#window-content').html(htmlString)
+  $('#context-window-content').html(htmlString)
+}
+
+function actionButtonHandlers() {
+
 }
 
 function addCssToPage(content) {
@@ -130,6 +149,11 @@ function addPlayerAnimations(gamestate) {
 //       } catch (e) {};
 // }
 
+
+// todo: remove this after figuring out how import/exports work
+function logMessage(message) {
+  $('#log-window-content').prepend(`${message}<br>`)
+}
 
 export {render, setHandlers, addPlayerAnimations}
 

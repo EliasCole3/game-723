@@ -1,19 +1,8 @@
 todo
 ------------------------
 Add medium and large bootstrap modals
-
-windows
- - Global game messages
- - Log
- - Context window
-
+Figure out modular structure stuff(import/export, etc.)
 ------------------------
-
-
-Unit class updates
----------------------
-
----------------------
 
 
 Design Decisions

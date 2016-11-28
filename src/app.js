@@ -17,7 +17,7 @@ let Warrior = require('./js/classes.es6').Warrior
 let Player = require('./js/classes.es6').Player
 let gameLogic = require('./js/game-logic.es6')
 let viewLogic = require('./js/view-logic.es6')
-let createMessageWindow = require('./js/windows.es6').createMessageWindow
+let windows = require('./js/windows.es6')
 
 // import{Cell, Blah} from './js/classes.es6' //figure this out later
 
@@ -80,7 +80,9 @@ let gamestate = {
     x: 5,
     y: 5
   },
-  units: []
+  units: [],
+  round: 1,
+  selectedUnitId: null
 }
 
 
@@ -101,7 +103,9 @@ $(() => {
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
-    createMessageWindow()
+    // createMessageWindow()
+    createWindows()
+    setInitialMessages(gamestate)
   })
 
 
@@ -110,7 +114,54 @@ $(() => {
 
 })
 
+function setInitialMessages(gamestate) {
+  logMessage('Game started!')
+  logMessage('Top of round 1')
+  logMessage(`${gamestate.currentPlayer.handle}'s turn`)
+  $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
+}
 
+function logMessage(message) {
+  $('#log-window-content').prepend(`${message}<br>`)
+}
+
+function createWindows() {
+  windows.createWindow({
+    windowId: 'message',
+    content: ``,
+    width: '450px',
+    height: '320px',
+    locationX: '300px',
+    locationY: '50px'
+  })
+
+  windows.createWindow({
+    windowId: 'log',
+    content: ``,
+    width: '450px',
+    height: '200px',
+    locationX: '300px',
+    locationY: '400px'
+  })
+
+  windows.createWindow({
+    windowId: 'context',
+    content: ``,
+    width: '450px',
+    height: '320px',
+    locationX: '800px',
+    locationY: '50px'
+  })
+
+  windows.createWindow({
+    windowId: 'actions',
+    content: ``,
+    width: '450px',
+    height: '320px',
+    locationX: '800px',
+    locationY: '400px'
+  })
+}
 
 function startHandler(gamestate) {
   // let testCell = new Cell(0, 0, 'mountains', img_mountains)
@@ -143,10 +194,10 @@ function startHandler(gamestate) {
   board[1][2] = new Cell(1, 2, 'water', img_water)
   board[2][2] = new Cell(2, 2, 'water', img_water)
 
-  let testWarrior = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargog', img_warrior, player1, false, 5, [])
-
-  board[2][3].occupiedBy = testWarrior
-  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2, false, 3, [])
+  board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 7, 13, 12, 'wargog', img_warrior, player1, false, 5, [])
+  board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, [])
+  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, [])
+  board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, [])
 
   gamestate.board = board
 
@@ -273,8 +324,21 @@ function move(x, y, direction, gamestate) {
     return
   }
 
+  if(gamestate.selectedUnitId !== oldCell.occupiedBy.id) {
+    return
+  }
+
+  if(newCell.occupiedBy !== null) {
+    console.log('cell is currently occupied')
+    return
+  }
+
+
   newCell.occupiedBy = oldCell.occupiedBy
   oldCell.occupiedBy = null
+
+  newCell.occupiedBy.x = newX
+  newCell.occupiedBy.y = newY
 
   gamestate.selectedCell.x = newX
   gamestate.selectedCell.y = newY
@@ -310,9 +374,12 @@ function setNonBoardHandlers(gamestate) {
 
 function endTurn(gamestate) {
   // temporary, for testing
-  $('#events').html(`${gamestate.currentPlayer.handle}'s turn has ended. Current player is now ${gamestate.players.next().handle}`)
-
+  // $('#events').html(`${gamestate.currentPlayer.handle}'s turn has ended. Current player is now ${gamestate.players.next().handle}`)
+  logMessage(`${gamestate.currentPlayer.handle}'s turn ended`)
+  gamestate.players.next()
   gamestate.currentPlayer = gamestate.players[gamestate.players.current]
+  $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
+  logMessage(`round ${gamestate.round}, ${gamestate.currentPlayer.handle}'s turn`)
 }
 
 

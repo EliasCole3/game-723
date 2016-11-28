@@ -50,7 +50,8 @@ function getMessagingWindowContent() {
 
 function createWindow(options) {
 
-  options.windowId += '-window'
+  let divId = options.windowId + '-window'
+  let divContent = options.windowId + '-window-content'
 
   if(!options.hasOwnProperty('width')) {
     options.width = '300px'
@@ -64,22 +65,24 @@ function createWindow(options) {
 
   // create the window html
   htmlString += `
-  <div id='${options.windowId}' class='window' style='width:${options.width}; height:${options.height}'>
-    <div id='window-close-${options.windowId}' class='window-close-button'><i class='glyphicon glyphicon-remove'></i></div><br>
-    ${options.content}
+  <div id='${divId}' class='window' style='width:${options.width}; height:${options.height}; top:${options.locationY}; left:${options.locationX}'>
+    <div id='window-close-${divId}' class='window-close-button'><i class='glyphicon glyphicon-remove'></i></div><br>
+    <span id='${divContent}'>
+      ${options.content}
+    </span>
   </div>`
 
   // add the window to the page
   $('#wrapper').append(htmlString)
 
   // make the window draggable and resizable
-  $(`#${options.windowId}`).draggable().resizable()
+  $(`#${divId}`).draggable().resizable()
 
   // enable the close functionality
-  $(`#window-close-${options.windowId}`).click(e => {
-    $(`#${options.windowId}`).remove()
+  $(`#window-close-${divId}`).click(e => {
+    $(`#${divId}`).remove()
     if(options.closeCallback) options.closeCallback()
   })
 }
 
-export {createMessageWindow}
+export {createMessageWindow, createWindow}

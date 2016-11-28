@@ -81,10 +81,11 @@ class Warrior extends Unit {
 
 class Player {
 
-  constructor(username, handle, color) {
+  constructor(username, handle, color, hasTakenTurn=false) {
     this.username = username
     this.handle = handle
     this.color = color
+    this.hasTakenTurn = hasTakenTurn
   }
 
 }
