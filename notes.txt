@@ -1,7 +1,11 @@
 todo
 ------------------------
 Add medium and large bootstrap modals
-Make movement indicator gif
+
+windows
+ - Global game messages
+ - Log
+ - Context window
 
 ------------------------
 
@@ -23,7 +27,6 @@ Full team turns or speed based turns?
 
 Features
 ---------------------
-When unit selected, show unit info
 Can't select a unit of a different player
 Determine possible move squares
 Limit movement to possible moves
@@ -33,7 +36,21 @@ non-unit map obstructions
 
 ---------------------
 
-
+Game Flow
+---------------------
+Select settings
+Start game
+player1 is selected
+select one of player1's units
+shows that units info, and actions that can be taken(move, attack, defend, items)
+click move, shows possible moves with indicators
+can move unit freely in area, the move button has changed to two buttons, stay and cancel
+move isn't an option now
+click attack, show unit's attack range
+clicking an enemy unit in range will prompt a confirmation to attack
+if yes, animation, sound, and damage all happen, and that unit's turn is over
+After every unit is finished, prompt to change turns
+---------------------
 
 
 

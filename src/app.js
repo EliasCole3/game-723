@@ -183,7 +183,7 @@ function setKeyboardHandlers(gamestate) {
     on_keydown: (e, countPressed, autoRepeat) => {
       if(autoRepeat) return
 
-      $('#events').html(`p down`)
+      // $('#events').html(`p down`)
 
       for(let x=0; x<gamestate.boardsize.x; x++) {
         for(let y=0; y<gamestate.boardsize.y; y++) {
@@ -198,7 +198,7 @@ function setKeyboardHandlers(gamestate) {
       viewLogic.render('#game', gamestate)
     },
     on_keyup: (e, countPressed, autoRepeat) => {
-      $('#events').html(`p up`)
+      // $('#events').html(`p up`)
 
       let playerIndicators = []
       gamestate.players.forEach(x => {
