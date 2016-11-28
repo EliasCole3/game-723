@@ -33,12 +33,13 @@ class Item {
 
 class Cell {
 
-  constructor(x, y, cellType, backgroundImage, occupiedBy=null) {
+  constructor(x, y, cellType, backgroundImage, occupiedBy=null, indicator=null) {
     this.x = x
     this.y = y
     this.cellType = cellType
     this.backgroundImage = backgroundImage
     this.occupiedBy = occupiedBy
+    this.indicator = indicator
   }
 
 }

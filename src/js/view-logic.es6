@@ -1,5 +1,6 @@
-function render(selector, board) {
-  $(selector).html(generateBoardHtml(board))
+function render(selector, gamestate) {
+  $(selector).html(generateBoardHtml(gamestate.board))
+  setHandlers(gamestate)
 }
 
 /**
@@ -27,7 +28,13 @@ function generateBoardHtml(board) {
       htmlString += `<img id='${backgroundImageId}' src='${cell.backgroundImage}' class='cell-background-image'>`
 
       // if there's something in the cell, add it's image on top of the cell image(assuming transparent images for units, items, etc.)
-      if(cell.occupiedBy) htmlString += `<img id='${imageId}' src='${cell.occupiedBy.image}' class='cell-image'>`
+      if(cell.occupiedBy) {
+        htmlString += `<img id='${imageId}' src='${cell.occupiedBy.image}' class='cell-image'>`
+      }
+
+      if(cell.indicator) {
+        htmlString += `<span class='indicator' style='animation: ${cell.indicator} 1.1s infinite; animation-direction: alternate;'></span>`
+      }
 
       htmlString += `</td>`
     })
@@ -59,11 +66,72 @@ function unitClicked(x, y, gamestate) {
 
   console.log(unit)
 
-  $('#window-content').html(unit.name)
+  let htmlString = ``
+  for(let prop in unit) {
+    htmlString += `${prop}: ${unit[prop]}<br>`
+  }
+
+  // $('#window-content').html(unit.name)
+  $('#window-content').html(htmlString)
+}
+
+function addCssToPage(content) {
+  console.log(`adding style to page: ${content}`)
+  var style = document.createElement('style')
+  style.type = 'text/css'
+  style.innerHTML = content
+  document.getElementsByTagName('head')[0].appendChild(style)
+  // console.log(document.getElementsByTagName('head')[0])
+}
+
+function addIndicatorAnimationToPage(nameParam, color1, color2) {
+  let name = `indicator-${nameParam}`
+  let style = `
+    @keyframes ${name} {
+      0% {
+        background-color: #${color1};
+      }
+      100% {
+        background-color: #${color2};
+      }
+    }`
+
+  addCssToPage(style)
+}
+
+function addPlayerAnimations(gamestate) {
+  gamestate.players.forEach(x => {
+    addIndicatorAnimationToPage(x.username, '999999', x.color)
+    // addIndicatorAnimationToPage(x.username, x.color, x.color)
+  })
 }
 
 
-export {render, setHandlers}
+
+
+// function addCssAnimationToPage() {
+//   var style = document.createElement('style')
+//   style.type = 'text/css'
+//   style.innerHTML = 'body {}'
+//   document.getElementsByTagName('head')[0].appendChild(style)
+//   this.stylesheet = document.styleSheets[document.styleSheets.length-1]
+//   try {
+//     this.stylesheet.insertRule('\
+//   @-webkit-keyframes spinIt {\
+//       100% {\
+//           -webkit-transform: rotate(A_DYNAMIC_VALUE);\
+//       }\
+//   }\
+//   @-moz-keyframes spinIt {\
+//       100% {\
+//           -webkit-transform: rotate(A_DYNAMIC_VALUE);\
+//       }\
+//   }', this.stylesheet.rules.length);
+//       } catch (e) {};
+// }
+
+
+export {render, setHandlers, addPlayerAnimations}
 
 
 

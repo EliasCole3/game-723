@@ -61,11 +61,11 @@ let config = {
   }
 }
 
-let player1 = new Player('username1', 'Irritic', '#asdfer')
-let player2 = new Player('username2', 'Findled', '#asdfer')
-let player3 = new Player('username3', 'Oprahwindfury', '#asdfer')
-let player4 = new Player('username4', 'DoctorOctorock', '#asdfer')
-let player5 = new Player('username5', 'XxXSwAgL0Rd420NoSCoPeXxX', '#asdfer')
+let player1 = new Player('username1', 'Irritic', '0000cc')
+let player2 = new Player('username2', 'Findled', 'cc0033')
+let player3 = new Player('username3', 'Oprahwindfury', '33cc00')
+let player4 = new Player('username4', 'DoctorOctorock', 'ff6600')
+let player5 = new Player('username5', 'XxXSwAgL0Rd420NoSCoPeXxX', 'cc33cc')
 
 let gamestate = {
   currentPlayer: player1,
@@ -97,6 +97,7 @@ $(() => {
   // console.log(test4)
 
   $('#start').on('click', e => {
+    viewLogic.addPlayerAnimations(gamestate)
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
@@ -112,17 +113,17 @@ $(() => {
 
 
 function startHandler(gamestate) {
-  let testCell = new Cell(0, 0, 'mountains', img_mountains)
-  console.log(testCell)
+  // let testCell = new Cell(0, 0, 'mountains', img_mountains)
+  // console.log(testCell)
   // $('#game').html(`<img src='${mountains}'>`)
-  $('#game').html(`<img src='${testCell.backgroundImage}'>`)
+  // $('#game').html(`<img src='${testCell.backgroundImage}'>`)
   // let testBlah = new Blah(0, 0, 'mountains', './images/app/tiles/mountains.jpg')
   // console.log(testBlah)
 
 
   let boardsizeX = +$('#board-size-x option:selected').val()
   let boardsizeY = +$('#board-size-y option:selected').val()
-  console.log(boardsizeX, boardsizeY)
+  // console.log(boardsizeX, boardsizeY)
   gamestate.boardsize.x = boardsizeX
   gamestate.boardsize.y = boardsizeY
 
@@ -148,8 +149,8 @@ function startHandler(gamestate) {
   board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 10, 10, 10, 'wargiggle', img_warrior, player2, false, 3, [])
 
   gamestate.board = board
-  viewLogic.render('#game', board)
-  viewLogic.setHandlers(gamestate)
+
+  viewLogic.render('#game', gamestate)
 }
 
 
@@ -187,14 +188,30 @@ function setKeyboardHandlers(gamestate) {
       for(let x=0; x<gamestate.boardsize.x; x++) {
         for(let y=0; y<gamestate.boardsize.y; y++) {
           if(gamestate.board[x][y].occupiedBy) {
-            console.log(`${gamestate.board[x][y].occupiedBy.name} is owned by ${gamestate.board[x][y].occupiedBy.player.handle}`)
+            // console.log(`${gamestate.board[x][y].occupiedBy.name} is owned by ${gamestate.board[x][y].occupiedBy.player.handle}`)
+            gamestate.board[x][y].indicator = `indicator-${gamestate.board[x][y].occupiedBy.player.username}`
           }
 
         }
       }
+
+      viewLogic.render('#game', gamestate)
     },
     on_keyup: (e, countPressed, autoRepeat) => {
       $('#events').html(`p up`)
+
+      let playerIndicators = []
+      gamestate.players.forEach(x => {
+        playerIndicators.push(`indicator-${x.username}`)
+      })
+
+      forEachCell(gamestate, cell => {
+        if(playerIndicators.includes(cell.indicator)) {
+          cell.indicator = null
+        }
+      })
+
+      viewLogic.render('#game', gamestate)
     }
   })
 
@@ -215,21 +232,6 @@ function moveUp(gamestate) {
 function moveDown(gamestate) {
   move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'down', gamestate)
 }
-
-// function moveLeft(x, y, gamestate) {
-//   let oldCell = gamestate.board[x][y]
-//   let newCell = gamestate.board[x-1][y]
-
-//   newCell.occupiedBy = oldCell.occupiedBy
-//   oldCell.occupiedBy = null
-
-//   gamestate.selectedCell.x = x-1
-//   gamestate.selectedCell.y = y
-
-//   viewLogic.render('#game', gamestate.board)
-//   viewLogic.setHandlers(gamestate)
-// }
-
 
 function move(x, y, direction, gamestate) {
   let newX = x
@@ -277,9 +279,7 @@ function move(x, y, direction, gamestate) {
   gamestate.selectedCell.x = newX
   gamestate.selectedCell.y = newY
 
-  viewLogic.render('#game', gamestate.board)
-  viewLogic.setHandlers(gamestate)
-
+  viewLogic.render('#game', gamestate)
 }
 
 // console.log(anyOfTheseAreTrue([true, true, true]))
@@ -316,7 +316,13 @@ function endTurn(gamestate) {
 }
 
 
-
+function forEachCell(gamestate, callback) {
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      callback(gamestate.board[x][y])
+    }
+  }
+}
 
 
 

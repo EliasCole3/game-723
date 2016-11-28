@@ -1,6 +1,7 @@
 todo
 ------------------------
 Add medium and large bootstrap modals
+Make movement indicator gif
 
 ------------------------
 
@@ -13,6 +14,7 @@ Unit class updates
 
 Design Decisions
 ---------------------
+Everything is driven from the data structure - the game board
 Full team turns or speed based turns?
  - full teams. So speed is just number of squares to move
 

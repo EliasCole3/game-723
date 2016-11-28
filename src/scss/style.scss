@@ -37,8 +37,36 @@
   height: 20px;
 }
 
+.indicator {
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  opacity: .2;
+}
+
+// .indicator {
+//   height: 50px;
+//   width: 50px;
+//   position: absolute;
+//   left: 0px;
+//   top: 0px;
+//   opacity: .2;
+//   animation: pulse 3s infinite;
+//   animation-direction: alternate;
+// }
 
 
+
+// @keyframes pulse {
+//   0% {
+//     background-color: #001F3F;
+//   }
+//   100% {
+//     background-color: #FF4136;
+//   }
+// }
 
 
 
