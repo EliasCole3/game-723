@@ -88,7 +88,6 @@ let gamestate = {
 
 $(() => {
 
-
   $('#board-size-x').chosen(config.chosenOptions)
   $('#board-size-y').chosen(config.chosenOptions)
 
@@ -100,6 +99,7 @@ $(() => {
 
   $('#start').on('click', e => {
     viewLogic.addPlayerAnimations(gamestate)
+    viewLogic.addGeneralAnimations(gamestate)
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
@@ -194,14 +194,30 @@ function startHandler(gamestate) {
   board[1][2] = new Cell(1, 2, 'water', img_water)
   board[2][2] = new Cell(2, 2, 'water', img_water)
 
-  board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 7, 13, 12, 'wargog', img_warrior, player1, false, 5, [])
-  board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, [])
-  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, [])
-  board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, [])
+  let wargogsItems = {
+    equipped: {
+      weapon: 'axe',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
+  board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 7, 13, 12, 'wargog', img_warrior, player1, false, 5, wargogsItems)
+  board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, {})
+  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, {})
+  board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, {})
 
   gamestate.board = board
 
   viewLogic.render('#game', gamestate)
+  setHandlers(gamestate)
 }
 
 
@@ -247,6 +263,7 @@ function setKeyboardHandlers(gamestate) {
       }
 
       viewLogic.render('#game', gamestate)
+      setHandlers(gamestate)
     },
     on_keyup: (e, countPressed, autoRepeat) => {
       // $('#events').html(`p up`)
@@ -263,6 +280,7 @@ function setKeyboardHandlers(gamestate) {
       })
 
       viewLogic.render('#game', gamestate)
+      setHandlers(gamestate)
     }
   })
 
@@ -344,6 +362,7 @@ function move(x, y, direction, gamestate) {
   gamestate.selectedCell.y = newY
 
   viewLogic.render('#game', gamestate)
+  setHandlers(gamestate)
 }
 
 // console.log(anyOfTheseAreTrue([true, true, true]))
@@ -393,13 +412,103 @@ function forEachCell(gamestate, callback) {
 
 
 
+function setHandlers(gamestate) {
+  $('.cell').on('click', e => {
+    let element = $(e.currentTarget)
+    let x = +element.attr('data-x')
+    let y = +element.attr('data-y')
+    console.log('cell clicked, coordinates: ', x, y)
+    gamestate.selectedCell.x = x
+    gamestate.selectedCell.y = y
+
+    if(gamestate.board[x][y].occupiedBy) { unitClicked(x, y, gamestate) }
+  })
+
+}
+
+function unitClicked(x, y, gamestate) {
+  let unit = gamestate.board[x][y].occupiedBy
+
+  if(unit.player.username !== gamestate.currentPlayer.username) {
+    logMessage('That unit doesn\'t belong to the current player')
+    return
+  }
+
+  let htmlString = ``
+  htmlString += `<button id='action-move' class='btn btn-medium'>Move</button>`
+  htmlString += `<button id='action-attack' class='btn btn-medium'>Attack</button>`
+  htmlString += `<button id='action-defend' class='btn btn-medium'>Defend</button>`
+  htmlString += `<button id='action-items' class='btn btn-medium'>Items</button>`
+  htmlString += `<button id='action-magic' class='btn btn-medium'>Magic</button>`
+  htmlString += `<button id='action-special-talent' class='btn btn-medium'>Special Talent</button>`
+  htmlString += `<button id='end-turn' class='btn btn-medium'>Temporary - End Turn</button>`
+
+  $('#actions-window-content').html(htmlString)
+
+  setActionButtonHandlers(gamestate)
+
+  gamestate.selectedUnitId = unit.id
+
+  htmlString = ``
+  for(let prop in unit) {
+    htmlString += `${prop}: ${unit[prop]}<br>`
+  }
+
+  // $('#window-content').html(unit.name)
+  $('#context-window-content').html(htmlString)
+}
+
+function setActionButtonHandlers(gamestate) {
+  $('#action-attack').click(e => {
+    let unit = getUnitfromUnitId(gamestate)
+    console.log(unit)
+    showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
+  })
+}
 
 
+function getUnitfromUnitId(gamestate) {
+  let unit = null
 
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      if(gamestate.board[x][y].occupiedBy && gamestate.board[x][y].occupiedBy.id === gamestate.selectedUnitId) {
+        unit = gamestate.board[x][y].occupiedBy
+      }
+    }
+  }
 
+  return unit
+}
 
+function showWeaponRange(unit, x, y, gamestate) {
 
+  let coordinates = getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
 
+  coordinates.forEach(coord => {
+    if(gamestate.board[coord.x] && gamestate.board[coord.x][coord.y]) {
+      gamestate.board[coord.x][coord.y].indicator = `indicator-weapon-range`
+    }
+  })
+
+  viewLogic.render('#game', gamestate)
+  setHandlers(gamestate)
+}
+
+function getCoordinatesForWeaponRange(weapon, x, y) {
+  let coordinates = []
+
+  if(weapon === 'axe') {
+    coordinates.push({x: x - 1, y: y})
+    coordinates.push({x: x + 1, y: y})
+    coordinates.push({x: x, y: y - 1})
+    coordinates.push({x: x, y: y + 1})
+  }
+
+  // bow, spear, etc.
+
+  return coordinates
+}
 
 
 

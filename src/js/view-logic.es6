@@ -1,6 +1,5 @@
 function render(selector, gamestate) {
   $(selector).html(generateBoardHtml(gamestate.board))
-  setHandlers(gamestate)
 }
 
 /**
@@ -47,52 +46,7 @@ function generateBoardHtml(board) {
   return htmlString
 }
 
-function setHandlers(gamestate) {
-  $('.cell').on('click', e => {
-    let element = $(e.currentTarget)
-    let x = +element.attr('data-x')
-    let y = +element.attr('data-y')
-    console.log('cell clicked, coordinates: ', x, y)
-    gamestate.selectedCell.x = x
-    gamestate.selectedCell.y = y
 
-    if(gamestate.board[x][y].occupiedBy) { unitClicked(x, y, gamestate) }
-  })
-
-}
-
-function unitClicked(x, y, gamestate) {
-  let unit = gamestate.board[x][y].occupiedBy
-
-  if(unit.player.username !== gamestate.currentPlayer.username) {
-    logMessage('That unit doesn\'t belong to the current player')
-    return
-  }
-
-  let htmlString = ``
-  htmlString += `<button id='action-move' class='btn btn-medium'>Move</button>`
-  htmlString += `<button id='action-attack' class='btn btn-medium'>Attack</button>`
-  htmlString += `<button id='action-defend' class='btn btn-medium'>Defend</button>`
-  htmlString += `<button id='action-items' class='btn btn-medium'>Items</button>`
-  htmlString += `<button id='action-magic' class='btn btn-medium'>Magic</button>`
-  htmlString += `<button id='action-special-talent' class='btn btn-medium'>Special Talent</button>`
-
-  $('#actions-window-content').html(htmlString)
-
-  gamestate.selectedUnitId = unit.id
-
-  htmlString = ``
-  for(let prop in unit) {
-    htmlString += `${prop}: ${unit[prop]}<br>`
-  }
-
-  // $('#window-content').html(unit.name)
-  $('#context-window-content').html(htmlString)
-}
-
-function actionButtonHandlers() {
-
-}
 
 function addCssToPage(content) {
   console.log(`adding style to page: ${content}`)
@@ -125,6 +79,10 @@ function addPlayerAnimations(gamestate) {
   })
 }
 
+function addGeneralAnimations(gamestate) {
+  addIndicatorAnimationToPage('weapon-range', '8e0404', 'e00202')
+}
+
 
 
 
@@ -155,7 +113,7 @@ function logMessage(message) {
   $('#log-window-content').prepend(`${message}<br>`)
 }
 
-export {render, setHandlers, addPlayerAnimations}
+export {render, addPlayerAnimations, addGeneralAnimations}
 
 
 

@@ -46,7 +46,7 @@ class Cell {
 
 class Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items=[]) {
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items={}) {
     this.id = id
     this.x = x
     this.y = y
