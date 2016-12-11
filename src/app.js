@@ -25,34 +25,7 @@ let keypress = require('keypress.js')
 
 
 
-Array.prototype.random = function () {
-  return this[Math.floor((Math.random()*this.length))]
-}
 
-Array.prototype.popRandomElement = function () {
-  let index = Math.round(Math.random() * (this.length - 1))
-  let element = this[index]
-  if (index > -1) {
-    this.splice(index, 1)
-  }
-  return element
-}
-
-Array.prototype.next = function() {
-  let nextVal = this[++this.current]
-  if(nextVal !== undefined) return nextVal
-  this.current = 0
-  return this[this.current]
-}
-
-Array.prototype.prev = function() {
-  let prevValue = this[--this.current]
-  if(prevValue !== undefined) return prevValue
-  this.current = this.length - 1
-  return this[this.current]
-}
-
-Array.prototype.current = 0
 
 
 let config = {
@@ -91,26 +64,15 @@ $(() => {
   $('#board-size-x').chosen(config.chosenOptions)
   $('#board-size-y').chosen(config.chosenOptions)
 
-  // let test3 = new Unit(gameLogic.getNextId(gamestate), 1, 1, 1, 20, 0, 10, 10, 10)
-  // console.log(test3)
-
-  // let test4 = new Warrior(gameLogic.getNextId(gamestate), 1, 1, 20, 0, 10, 10, 10, 'wargog', img_warrior)
-  // console.log(test4)
-
   $('#start').on('click', e => {
     viewLogic.addPlayerAnimations(gamestate)
     viewLogic.addGeneralAnimations(gamestate)
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
-    // createMessageWindow()
     createWindows()
     setInitialMessages(gamestate)
   })
-
-
-
-
 
 })
 
@@ -119,10 +81,6 @@ function setInitialMessages(gamestate) {
   logMessage('Top of round 1')
   logMessage(`${gamestate.currentPlayer.handle}'s turn`)
   $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
-}
-
-function logMessage(message) {
-  $('#log-window-content').prepend(`${message}<br>`)
 }
 
 function createWindows() {
@@ -338,15 +296,18 @@ function move(x, y, direction, gamestate) {
   let oldCell = gamestate.board[x][y]
   let newCell = gamestate.board[newX][newY]
 
+  // if an empty cell is selected, and the user tries to move
   if(!oldCell.occupiedBy) {
     console.log('there\'s nothing in that cell sillyface')
     return
   }
 
+  // if, for whatever reason, the currently selected unit isn't actually in the currently selected cell
   if(gamestate.selectedUnitId !== oldCell.occupiedBy.id) {
     return
   }
 
+  // if there's nothing in the new cell
   if(newCell.occupiedBy !== null) {
     console.log('cell is currently occupied')
     return
@@ -366,29 +327,11 @@ function move(x, y, direction, gamestate) {
   setHandlers(gamestate)
 }
 
-// console.log(anyOfTheseAreTrue([true, true, true]))
-// console.log(anyOfTheseAreTrue([true, true, false]))
-// console.log(anyOfTheseAreTrue([true, false, false]))
-// console.log(anyOfTheseAreTrue([false, false, false]))
-function anyOfTheseAreTrue(conditions) {
-  let returnValue = false
-
-  conditions.forEach(x => {
-    if(x) returnValue = true
-  })
-
-  return returnValue
-}
-
-
 function setNonBoardHandlers(gamestate) {
 
   $('#end-turn').click(e => {
     endTurn(gamestate)
   })
-
-
-
 
 }
 
@@ -401,17 +344,6 @@ function endTurn(gamestate) {
   $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
   logMessage(`round ${gamestate.round}, ${gamestate.currentPlayer.handle}'s turn`)
 }
-
-
-function forEachCell(gamestate, callback) {
-  for(let x=0; x<gamestate.boardsize.x; x++) {
-    for(let y=0; y<gamestate.boardsize.y; y++) {
-      callback(gamestate.board[x][y])
-    }
-  }
-}
-
-
 
 function setHandlers(gamestate) {
   $('.cell').on('click', e => {
@@ -430,11 +362,24 @@ function setHandlers(gamestate) {
 function unitClicked(x, y, gamestate) {
   let unit = gamestate.board[x][y].occupiedBy
 
+  console.log(unit)
+
   if(unit.player.username !== gamestate.currentPlayer.username) {
     logMessage('That unit doesn\'t belong to the current player')
     return
   }
 
+  gamestate.selectedUnitId = unit.id
+
+  setActionsWindow_BasicActions(gamestate)
+  showUnitInfo(unit)
+}
+
+
+
+
+
+function setActionsWindow_BasicActions(gamestate) {
   let htmlString = ``
   htmlString += `<button id='action-move' class='btn btn-medium'>Move</button>`
   htmlString += `<button id='action-attack' class='btn btn-medium'>Attack</button>`
@@ -446,40 +391,51 @@ function unitClicked(x, y, gamestate) {
 
   $('#actions-window-content').html(htmlString)
 
-  setActionButtonHandlers(gamestate)
-
-  gamestate.selectedUnitId = unit.id
-
-  htmlString = ``
-  for(let prop in unit) {
-    htmlString += `${prop}: ${unit[prop]}<br>`
-  }
-
-  // $('#window-content').html(unit.name)
-  $('#context-window-content').html(htmlString)
+  actionButtonHandlers_BasicActions(gamestate)
 }
 
-function setActionButtonHandlers(gamestate) {
+function actionButtonHandlers_BasicActions(gamestate) {
   $('#action-attack').click(e => {
     let unit = getUnitfromUnitId(gamestate)
-    console.log(unit)
     showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
+
+    setActionsWindow_CancelAttack(gamestate)
   })
 }
 
 
-function getUnitfromUnitId(gamestate) {
-  let unit = null
 
-  for(let x=0; x<gamestate.boardsize.x; x++) {
-    for(let y=0; y<gamestate.boardsize.y; y++) {
-      if(gamestate.board[x][y].occupiedBy && gamestate.board[x][y].occupiedBy.id === gamestate.selectedUnitId) {
-        unit = gamestate.board[x][y].occupiedBy
-      }
-    }
+function setActionsWindow_CancelAttack(gamestate) {
+  let htmlString = ``
+  htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
+
+  $('#actions-window-content').html(htmlString)
+
+  actionButtonHandlers_CancelAttack(gamestate)
+}
+
+function actionButtonHandlers_CancelAttack(gamestate) {
+  $('#action-cancel-attack').click(e => {
+    // let unit = getUnitfromUnitId(gamestate)
+    // showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
+    clearWeaponRange(gamestate)
+    setActionsWindow_BasicActions(gamestate)
+  })
+}
+
+
+
+
+
+
+function showUnitInfo(unit) {
+  htmlString = ``
+
+  for(let prop in unit) {
+    htmlString += `${prop}: ${unit[prop]}<br>`
   }
 
-  return unit
+  $('#context-window-content').html(htmlString)
 }
 
 function showWeaponRange(unit, x, y, gamestate) {
@@ -511,6 +467,16 @@ function getCoordinatesForWeaponRange(weapon, x, y) {
   return coordinates
 }
 
+function clearWeaponRange(gamestate) {
+  forEachCell(gamestate, cell => {
+    if(cell.indicator === 'indicator-weapon-range') {
+      cell.indicator = null
+    }
+  })
+
+  viewLogic.render('#game', gamestate)
+  setHandlers(gamestate)
+}
 
 
 
@@ -524,6 +490,88 @@ function getCoordinatesForWeaponRange(weapon, x, y) {
 
 
 
+/*
+
+Utility Functions
+
+*/
+
+function getUnitfromUnitId(gamestate) {
+  let unit = null
+
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      if(gamestate.board[x][y].occupiedBy && gamestate.board[x][y].occupiedBy.id === gamestate.selectedUnitId) {
+        unit = gamestate.board[x][y].occupiedBy
+      }
+    }
+  }
+
+  return unit
+}
+
+function forEachCell(gamestate, callback) {
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      callback(gamestate.board[x][y])
+    }
+  }
+}
+
+// console.log(anyOfTheseAreTrue([true, true, true]))
+// console.log(anyOfTheseAreTrue([true, true, false]))
+// console.log(anyOfTheseAreTrue([true, false, false]))
+// console.log(anyOfTheseAreTrue([false, false, false]))
+function anyOfTheseAreTrue(conditions) {
+  let returnValue = false
+
+  conditions.forEach(x => {
+    if(x) returnValue = true
+  })
+
+  return returnValue
+}
+
+function logMessage(message) {
+  $('#log-window-content').prepend(`${message}<br>`)
+}
+
+
+
+/*
+
+Modifying Array.prototype to add more functionality
+
+*/
+
+Array.prototype.random = function () {
+  return this[Math.floor((Math.random()*this.length))]
+}
+
+Array.prototype.popRandomElement = function () {
+  let index = Math.round(Math.random() * (this.length - 1))
+  let element = this[index]
+  if (index > -1) {
+    this.splice(index, 1)
+  }
+  return element
+}
+
+Array.prototype.next = function() {
+  let nextVal = this[++this.current]
+  if(nextVal !== undefined) return nextVal
+  this.current = 0
+  return this[this.current]
+}
+
+Array.prototype.prev = function() {
+  let prevValue = this[--this.current]
+  if(prevValue !== undefined) return prevValue
+  this.current = this.length - 1
+  return this[this.current]
+}
+
+Array.prototype.current = 0
 
 
 
