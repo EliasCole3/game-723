@@ -1,19 +1,19 @@
 function render(selector, gamestate) {
-  $(selector).html(generateBoardHtml(gamestate.board))
+  $(selector).html(generateBoardHtml(gamestate))
 }
 
 /**
  * @param   board      2D array of game cells
  * @return  string     html snippet for the game board
  */
-function generateBoardHtml(board) {
+function generateBoardHtml(gamestate) {
+  let board = gamestate.board
   let htmlString = ``
 
   htmlString += `<table id='game-board'>`
 
-  let numberOfRows = board[0].length
-
-  for(let i=0; i<numberOfRows; i++) {
+  // number of rows
+  for(let i=0; i<board[0].length; i++) {
     htmlString += `<tr id='row-${i}'>`
 
     board.forEach(column => {
@@ -33,6 +33,18 @@ function generateBoardHtml(board) {
 
       if(cell.indicator) {
         htmlString += `<span class='indicator' style='animation: ${cell.indicator} 1.1s infinite; animation-direction: alternate;'></span>`
+      }
+
+      // primary selector
+      if(cellIsSelected(cell, gamestate)) {
+        htmlString += `<span class='selector default-selector'></span>`
+      }
+
+      // context sensitive selector, for attacking, moving, etc.
+      if(cellIsSelectedSecondary(cell, gamestate)) {
+        if(gamestate.currentMode === 'attack') {
+          htmlString += `<span class='selector attack-selector'></span>`
+        }
       }
 
       htmlString += `</td>`
@@ -83,7 +95,15 @@ function addGeneralAnimations(gamestate) {
   addIndicatorAnimationToPage('weapon-range', '8e0404', 'e00202')
 }
 
+function cellIsSelected(cell, gamestate) {
+  if(cell.x === gamestate.selectedCell.x && cell.y === gamestate.selectedCell.y) return true
+  return false
+}
 
+function cellIsSelectedSecondary(cell, gamestate) {
+  if(cell.x === gamestate.selectedCellSecondary.x && cell.y === gamestate.selectedCellSecondary.y) return true
+  return false
+}
 
 
 // function addCssAnimationToPage() {

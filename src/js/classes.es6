@@ -80,6 +80,7 @@ class Warrior extends Unit {
   constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items) {
     super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items)
 
+    this.primaryStat = 'strength'
     // console.log('constructing new warrior:')
     // for(let prop in this) {
     //   console.log(prop, this[prop])

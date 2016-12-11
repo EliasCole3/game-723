@@ -52,6 +52,23 @@
   overflow-x: hidden;
 }
 
+.selector {
+  height: 48px;
+  width: 48px;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  opacity: .8;
+}
+
+.default-selector {
+  border: 2px black solid;
+}
+
+.attack-selector {
+  border: 2px red solid;
+}
+
 // .indicator {
 //   height: 50px;
 //   width: 50px;

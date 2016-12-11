@@ -45,8 +45,12 @@ let gamestate = {
   players: [player1, player2, player3],
   nextUnitId: 1,
   selectedCell: {
-    x: 0,
-    y: 0
+    x: null,
+    y: null
+  },
+  selectedCellSecondary: {
+    x: null,
+    y: null
   },
   board: null,
   boardsize: {
@@ -55,7 +59,8 @@ let gamestate = {
   },
   units: [],
   round: 1,
-  selectedUnitId: null
+  selectedUnitId: null,
+  currentMode: 'default'
 }
 
 
@@ -122,17 +127,9 @@ function createWindows() {
 }
 
 function startHandler(gamestate) {
-  // let testCell = new Cell(0, 0, 'mountains', img_mountains)
-  // console.log(testCell)
-  // $('#game').html(`<img src='${mountains}'>`)
-  // $('#game').html(`<img src='${testCell.backgroundImage}'>`)
-  // let testBlah = new Blah(0, 0, 'mountains', './images/app/tiles/mountains.jpg')
-  // console.log(testBlah)
-
 
   let boardsizeX = +$('#board-size-x option:selected').val()
   let boardsizeY = +$('#board-size-y option:selected').val()
-  // console.log(boardsizeX, boardsizeY)
   gamestate.boardsize.x = boardsizeX
   gamestate.boardsize.y = boardsizeY
 
@@ -167,16 +164,14 @@ function startHandler(gamestate) {
     }
   }
 
-  board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 7, 13, 12, 'wargog', img_warrior, player1, false, 5, wargogsItems)
+  board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', img_warrior, player1, false, 5, wargogsItems)
   board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, {})
   board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, {})
   board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, {})
-  // console.log(board[2][3].occupiedBy.current)
 
   gamestate.board = board
 
-  viewLogic.render('#game', gamestate)
-  setHandlers(gamestate)
+  render(gamestate)
 }
 
 
@@ -221,8 +216,7 @@ function setKeyboardHandlers(gamestate) {
         }
       }
 
-      viewLogic.render('#game', gamestate)
-      setHandlers(gamestate)
+      render(gamestate)
     },
     on_keyup: (e, countPressed, autoRepeat) => {
       // $('#events').html(`p up`)
@@ -238,8 +232,7 @@ function setKeyboardHandlers(gamestate) {
         }
       })
 
-      viewLogic.render('#game', gamestate)
-      setHandlers(gamestate)
+      render(gamestate)
     }
   })
 
@@ -298,7 +291,7 @@ function move(x, y, direction, gamestate) {
 
   // if an empty cell is selected, and the user tries to move
   if(!oldCell.occupiedBy) {
-    console.log('there\'s nothing in that cell sillyface')
+    console.log('there\'s nothing in that cell to move')
     return
   }
 
@@ -323,8 +316,10 @@ function move(x, y, direction, gamestate) {
   gamestate.selectedCell.x = newX
   gamestate.selectedCell.y = newY
 
-  viewLogic.render('#game', gamestate)
-  setHandlers(gamestate)
+  render(gamestate)
+
+  // this is here so the unit position in the window will update
+  showUnitInfo(newCell.occupiedBy)
 }
 
 function setNonBoardHandlers(gamestate) {
@@ -347,14 +342,47 @@ function endTurn(gamestate) {
 
 function setHandlers(gamestate) {
   $('.cell').on('click', e => {
-    let element = $(e.currentTarget)
-    let x = +element.attr('data-x')
-    let y = +element.attr('data-y')
-    console.log('cell clicked, coordinates: ', x, y)
-    gamestate.selectedCell.x = x
-    gamestate.selectedCell.y = y
 
-    if(gamestate.board[x][y].occupiedBy) { unitClicked(x, y, gamestate) }
+    let cell = $(e.currentTarget)
+    let x = +cell.attr('data-x')
+    let y = +cell.attr('data-y')
+    console.log('cell clicked, coordinates: ', x, y)
+
+    if(gamestate.currentMode === 'default') {
+
+      gamestate.selectedCell.x = x
+      gamestate.selectedCell.y = y
+
+      render(gamestate)
+
+      if(gamestate.board[x][y].occupiedBy) {
+        unitClicked(x, y, gamestate)
+      } else {
+        setActionsWindow_Empty(gamestate)
+      }
+    }
+
+    if(gamestate.currentMode === 'attack') {
+      gamestate.selectedCellSecondary.x = x
+      gamestate.selectedCellSecondary.y = y
+
+      render(gamestate)
+
+      let cell = getCellFromCoordinates(x, y, gamestate)
+
+      if(cell.indicator === 'indicator-weapon-range') {
+        setActionsWindow_ConfirmAttack(gamestate)
+      }
+    }
+
+    if(gamestate.currentMode === 'move') {
+
+    }
+
+    if(gamestate.currentMode === 'item') {
+
+    }
+
   })
 
 }
@@ -377,7 +405,9 @@ function unitClicked(x, y, gamestate) {
 
 
 
-
+function setActionsWindow_Empty(gamestate) {
+  $('#actions-window-content').html('')
+}
 
 function setActionsWindow_BasicActions(gamestate) {
   let htmlString = ``
@@ -398,7 +428,7 @@ function actionButtonHandlers_BasicActions(gamestate) {
   $('#action-attack').click(e => {
     let unit = getUnitfromUnitId(gamestate)
     showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
-
+    gamestate.currentMode = 'attack'
     setActionsWindow_CancelAttack(gamestate)
   })
 }
@@ -408,18 +438,56 @@ function actionButtonHandlers_BasicActions(gamestate) {
 function setActionsWindow_CancelAttack(gamestate) {
   let htmlString = ``
   htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
-
   $('#actions-window-content').html(htmlString)
-
   actionButtonHandlers_CancelAttack(gamestate)
 }
 
 function actionButtonHandlers_CancelAttack(gamestate) {
   $('#action-cancel-attack').click(e => {
-    // let unit = getUnitfromUnitId(gamestate)
-    // showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
+    gamestate.currentMode = 'default'
     clearWeaponRange(gamestate)
     setActionsWindow_BasicActions(gamestate)
+  })
+}
+
+
+
+function setActionsWindow_ConfirmAttack(gamestate) {
+  let htmlString = ``
+  htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
+  htmlString += `<button id='action-confirm-attack' class='btn btn-medium'>Confirm Attack</button>`
+  $('#actions-window-content').html(htmlString)
+  actionButtonHandlers_CancelAttack(gamestate)
+  actionButtonHandlers_ConfirmAttack(gamestate)
+
+}
+
+function actionButtonHandlers_ConfirmAttack(gamestate) {
+  $('#action-confirm-attack').click(e => {
+    let attacker = gamestate.board[gamestate.selectedCell.x][gamestate.selectedCell.y].occupiedBy
+    let defender = gamestate.board[gamestate.selectedCellSecondary.x][gamestate.selectedCellSecondary.y].occupiedBy
+
+    let battleResults = gameLogic.attack(attacker, defender, gamestate)
+
+    attacker.hasTakenTurn = true
+
+    battleResults.messages.forEach(x => {
+      logMessage(x)
+    })
+
+    clearSelectors(gamestate)
+
+    clearWeaponRange(gamestate)
+
+    // check casualties
+
+    // check if player's turn is done
+
+    gamestate.currentMode = 'default'
+
+    render(gamestate)
+
+    setActionsWindow_Empty(gamestate)
   })
 }
 
@@ -431,8 +499,19 @@ function actionButtonHandlers_CancelAttack(gamestate) {
 function showUnitInfo(unit) {
   htmlString = ``
 
+  let propertiesToNotShow = [
+    'id',
+    'image',
+    'player',
+    'items',
+    'current'
+  ]
+
   for(let prop in unit) {
-    htmlString += `${prop}: ${unit[prop]}<br>`
+    // if the current property isn't in the list. Easier to blacklist than whitelist
+    if(!propertiesToNotShow.includes(prop)) {
+      htmlString += `${prop}: ${unit[prop]}<br>`
+    }
   }
 
   $('#context-window-content').html(htmlString)
@@ -448,8 +527,7 @@ function showWeaponRange(unit, x, y, gamestate) {
     }
   })
 
-  viewLogic.render('#game', gamestate)
-  setHandlers(gamestate)
+  render(gamestate)
 }
 
 function getCoordinatesForWeaponRange(weapon, x, y) {
@@ -474,10 +552,15 @@ function clearWeaponRange(gamestate) {
     }
   })
 
-  viewLogic.render('#game', gamestate)
-  setHandlers(gamestate)
+  render(gamestate)
 }
 
+function clearSelectors(gamestate) {
+  gamestate.selectedCell.x = null
+  gamestate.selectedCell.y = null
+  gamestate.selectedCellSecondary.x = null
+  gamestate.selectedCellSecondary.y = null
+}
 
 
 
@@ -496,6 +579,11 @@ Utility Functions
 
 */
 
+function render(gamestate) {
+  viewLogic.render('#game', gamestate)
+  setHandlers(gamestate)
+}
+
 function getUnitfromUnitId(gamestate) {
   let unit = null
 
@@ -508,6 +596,15 @@ function getUnitfromUnitId(gamestate) {
   }
 
   return unit
+}
+
+function getCellFromCoordinates(x, y, gamestate) {
+  if(gamestate.board[x] && gamestate.board[x][y]) {
+    return gamestate.board[x][y]
+  } else {
+    console.log('illegal coordinates in getCellFromCoordinates(), returning null')
+    return null
+  }
 }
 
 function forEachCell(gamestate, callback) {
