@@ -63,7 +63,7 @@ let config = {
 
 let player1 = new Player('username1', 'Irritic', '0000cc')
 let player2 = new Player('username2', 'Findled', 'cc0033')
-let player3 = new Player('username3', 'Oprahwindfury', '33cc00')
+let player3 = new Player('username3', 'Oprah Windfury', '33cc00')
 let player4 = new Player('username4', 'DoctorOctorock', 'ff6600')
 let player5 = new Player('username5', 'XxXSwAgL0Rd420NoSCoPeXxX', 'cc33cc')
 
@@ -213,6 +213,7 @@ function startHandler(gamestate) {
   board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, {})
   board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, {})
   board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, {})
+  // console.log(board[2][3].occupiedBy.current)
 
   gamestate.board = board
 

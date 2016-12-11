@@ -61,6 +61,15 @@ class Unit {
     this.hasTakenTurn = hasTakenTurn
     this.speed = speed
     this.items = items
+    this.current = {
+      hp: hp,
+      mp: mp,
+      strength: strength,
+      intelligence: intelligence,
+      dexterity: dexterity,
+      hasTakenTurn: hasTakenTurn,
+      speed: speed
+    }
   }
 
 
@@ -71,10 +80,10 @@ class Warrior extends Unit {
   constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items) {
     super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items)
 
-    console.log('constructing new warrior:')
-    for(let prop in this) {
-      console.log(prop, this[prop])
-    }
+    // console.log('constructing new warrior:')
+    // for(let prop in this) {
+    //   console.log(prop, this[prop])
+    // }
   }
 
 }

@@ -49,7 +49,7 @@ function generateBoardHtml(board) {
 
 
 function addCssToPage(content) {
-  console.log(`adding style to page: ${content}`)
+  // console.log(`adding style to page: ${content}`)
   var style = document.createElement('style')
   style.type = 'text/css'
   style.innerHTML = content
