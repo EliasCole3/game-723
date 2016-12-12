@@ -8,6 +8,7 @@ require('bootstrap/dist/css/bootstrap.css')
 let img_mountains = require('./images/app/moutains.png')
 let img_water = require('./images/app/water.png')
 let img_warrior = require('./images/app/warrior.png')
+let img_warrior_dead = require('./images/app/warrior-dead.png')
 
 let say = require('./js/sample1')
 let Cell = require('./js/classes.es6').Cell
@@ -164,14 +165,98 @@ function startHandler(gamestate) {
     }
   }
 
-  board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', img_warrior, player1, false, 5, wargogsItems)
-  board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, {})
-  board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, {})
-  board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, {})
+  let wargrogsItems = {
+    equipped: {
+      weapon: 'axe of the gods',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
+  let joesItems = {
+    equipped: {
+      weapon: 'axe',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
+  let hanksItems = {
+    equipped: {
+      weapon: 'axe',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
+  let lightningsItems = {
+    equipped: {
+      weapon: 'axe',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
+  let thundersItems = {
+    equipped: {
+      weapon: 'axe',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
+  let warriorImages = {
+      default: img_warrior,
+      dead: img_warrior_dead
+    }
+
+  // board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', img_warrior, player1, false, 5, warriorImages, wargogsItems)
+  board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, warriorImages, wargrogsItems)
+  // board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, warriorImages, joesItems)
+  board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, warriorImages, hanksItems)
+  // board[0][2].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 25, 12, 9, 'Lightning', img_warrior, player3, false, 4, warriorImages, lightningsItems)
+  board[0][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 22, 12, 9, 'Thunder', img_warrior, player3, false, 4, warriorImages, thundersItems)
 
   gamestate.board = board
 
   render(gamestate)
+
+
 }
 
 
@@ -203,39 +288,39 @@ function setKeyboardHandlers(gamestate) {
     keys: 'p',
     on_keydown: (e, countPressed, autoRepeat) => {
       if(autoRepeat) return
-
-      // $('#events').html(`p down`)
-
-      for(let x=0; x<gamestate.boardsize.x; x++) {
-        for(let y=0; y<gamestate.boardsize.y; y++) {
-          if(gamestate.board[x][y].occupiedBy) {
-            // console.log(`${gamestate.board[x][y].occupiedBy.name} is owned by ${gamestate.board[x][y].occupiedBy.player.handle}`)
-            gamestate.board[x][y].indicator = `indicator-${gamestate.board[x][y].occupiedBy.player.username}`
-          }
-
-        }
-      }
-
+      addPlayerIndicators(gamestate)
       render(gamestate)
     },
     on_keyup: (e, countPressed, autoRepeat) => {
-      // $('#events').html(`p up`)
-
-      let playerIndicators = []
-      gamestate.players.forEach(x => {
-        playerIndicators.push(`indicator-${x.username}`)
-      })
-
-      forEachCell(gamestate, cell => {
-        if(playerIndicators.includes(cell.indicator)) {
-          cell.indicator = null
-        }
-      })
-
+      removePlayerIndicators(gamestate)
       render(gamestate)
     }
   })
 
+}
+
+function addPlayerIndicators(gamestate) {
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      if(gamestate.board[x][y].occupiedBy) {
+        gamestate.board[x][y].indicator = `indicator-${gamestate.board[x][y].occupiedBy.player.username}`
+      }
+    }
+  }
+}
+
+function removePlayerIndicators(gamestate) {
+  let playerIndicators = []
+
+  gamestate.players.forEach(x => {
+    playerIndicators.push(`indicator-${x.username}`)
+  })
+
+  forEachCell(gamestate, cell => {
+    if(playerIndicators.includes(cell.indicator)) {
+      cell.indicator = null
+    }
+  })
 }
 
 function moveLeft(gamestate) {
@@ -328,16 +413,50 @@ function setNonBoardHandlers(gamestate) {
     endTurn(gamestate)
   })
 
+  $('#disable-player-1').click(e => {
+    gamestate.players[0].disabled = true
+  })
+
+  $('#disable-player-2').click(e => {
+    gamestate.players[1].disabled = true
+  })
+
+  $('#disable-player-3').click(e => {
+    gamestate.players[2].disabled = true
+  })
+
+
+
 }
 
 function endTurn(gamestate) {
-  // temporary, for testing
-  // $('#events').html(`${gamestate.currentPlayer.handle}'s turn has ended. Current player is now ${gamestate.players.next().handle}`)
   logMessage(`${gamestate.currentPlayer.handle}'s turn ended`)
-  gamestate.players.next()
-  gamestate.currentPlayer = gamestate.players[gamestate.players.current]
+  gamestate.currentPlayer.hasTakenTurn = true
+
+  // always rotate players once, and keep going if multiple players are disabled
+  do {
+    gamestate.players.next()
+    gamestate.currentPlayer = gamestate.players[gamestate.players.current]
+  } while(gamestate.currentPlayer.disabled === true)
+
+  if(allPlayersHaveTakenTheirTurn(gamestate)) {
+    gamestate.players.forEach(x => {
+      x.hasTakenTurn = false
+    })
+    gamestate.round++
+  }
+
   $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
   logMessage(`round ${gamestate.round}, ${gamestate.currentPlayer.handle}'s turn`)
+  addCurrentPlayerBorderToBoard(gamestate)
+}
+
+function allPlayersHaveTakenTheirTurn(gamestate) {
+  let playersDone = true
+  gamestate.players.forEach(x => {
+    if(!x.hasTakenTurn) playersDone = false
+  })
+  return playersDone
 }
 
 function setHandlers(gamestate) {
@@ -390,7 +509,7 @@ function setHandlers(gamestate) {
 function unitClicked(x, y, gamestate) {
   let unit = gamestate.board[x][y].occupiedBy
 
-  console.log(unit)
+  // console.log(unit)
 
   if(unit.player.username !== gamestate.currentPlayer.username) {
     logMessage('That unit doesn\'t belong to the current player')
@@ -479,18 +598,61 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
 
     clearWeaponRange(gamestate)
 
-    // check casualties
+    gamestate.players.forEach(player => {
+      if(allPlayersUnitsAreDead(player, gamestate)) {
+        player.disabled = true
+      }
+    })
 
-    // check if player's turn is done
+    if(currentPlayersTurnIsOver(gamestate)) {
+      endTurn(gamestate)
+    }
 
     gamestate.currentMode = 'default'
 
     render(gamestate)
 
     setActionsWindow_Empty(gamestate)
+
+    // win condition
+
+    let numberOfDisabledPlayers = gamestate.players.filter(x => {
+      return x.disabled
+    }).length
+
+    if(numberOfDisabledPlayers === gamestate.players.length-1) {
+      alert(`game over! ${gamestate.currentPlayer.handle} won!`)
+    }
   })
 }
 
+
+function currentPlayersTurnIsOver(gamestate) {
+  let turnOver = true
+
+  // if there are any units that haven't taken their turn yet, the player's turn isn't done
+  forEachCell(gamestate, cell => {
+    // try {
+    //   console.log('**************************')
+    //   console.log(cell.occupiedBy)
+    //   console.log(cell.occupiedBy.player)
+    //   console.log(gamestate.currentPlayer)
+    //   console.log(gamestate.currentPlayer == cell.occupiedBy.player)
+    //   console.log(gamestate.currentPlayer === cell.occupiedBy.player)
+    //   console.log(cell.occupiedBy.hasTakenTurn)
+    //   console.log('**************************')
+    //   console.log()
+    // } catch(e) {
+    //   console.log('error')
+    // }
+
+    if(cell.occupiedBy && cell.occupiedBy.player === gamestate.currentPlayer) {
+      if(!cell.occupiedBy.hasTakenTurn) turnOver = false
+    }
+  })
+
+  return turnOver
+}
 
 
 
@@ -533,7 +695,7 @@ function showWeaponRange(unit, x, y, gamestate) {
 function getCoordinatesForWeaponRange(weapon, x, y) {
   let coordinates = []
 
-  if(weapon === 'axe') {
+  if(weapon === 'axe' || weapon === 'axe of the gods') {
     coordinates.push({x: x - 1, y: y})
     coordinates.push({x: x + 1, y: y})
     coordinates.push({x: x, y: y - 1})
@@ -562,8 +724,23 @@ function clearSelectors(gamestate) {
   gamestate.selectedCellSecondary.y = null
 }
 
+function addCurrentPlayerBorderToBoard(gamestate) {
+  $('#game-board').css({
+    'border': `10px groove #${gamestate.currentPlayer.color}`
+  })
+}
 
+function allPlayersUnitsAreDead(player, gamestate) {
+  // if(player.handle === 'Oprah Windfury') debugger
 
+  let unitsAreDead = true
+
+  forAllUnitsOfAPlayer(player, gamestate, unit => {
+    if(unit.current.hp !== 0) unitsAreDead = false
+  })
+
+  return unitsAreDead
+}
 
 
 
@@ -581,7 +758,9 @@ Utility Functions
 
 function render(gamestate) {
   viewLogic.render('#game', gamestate)
+  addCurrentPlayerBorderToBoard(gamestate)
   setHandlers(gamestate)
+  // addPlayerIndicators(gamestate) // for debugging, but it is kind of nice
 }
 
 function getUnitfromUnitId(gamestate) {
@@ -611,6 +790,18 @@ function forEachCell(gamestate, callback) {
   for(let x=0; x<gamestate.boardsize.x; x++) {
     for(let y=0; y<gamestate.boardsize.y; y++) {
       callback(gamestate.board[x][y])
+    }
+  }
+}
+
+function forAllUnitsOfAPlayer(player, gamestate, callback) {
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      let cell = gamestate.board[x][y]
+      if(cell.occupiedBy && cell.occupiedBy.player === player) {
+        let unit = cell.occupiedBy
+        callback(unit)
+      }
     }
   }
 }

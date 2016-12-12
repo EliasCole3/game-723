@@ -10,6 +10,7 @@ function attack(attacker, defender, gamestate) {
   let damageAmount = calculateDamage(attacker, defender)
 
   defender.current.hp -= damageAmount
+  if(defender.current.hp < 0) defender.current.hp = 0
 
   battleResults.messages.push(`${attacker.name} attacked ${defender.name} for ${damageAmount} points of damage!`)
   battleResults.messages.push(`${defender.name} has ${defender.current.hp} out of ${defender.hp} health points remaining`)
@@ -43,6 +44,10 @@ function getDamageMitigation(defender) {
 function getDiceRollForWeapon(weapon) {
   if(weapon === 'axe') {
     return '1d6'
+  }
+
+  if(weapon === 'axe of the gods') {
+    return '10d12'
   }
 
   return '1d4'

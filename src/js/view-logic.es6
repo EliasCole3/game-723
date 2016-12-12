@@ -28,7 +28,13 @@ function generateBoardHtml(gamestate) {
 
       // if there's something in the cell, add it's image on top of the cell image(assuming transparent images for units, items, etc.)
       if(cell.occupiedBy) {
-        htmlString += `<img id='${imageId}' src='${cell.occupiedBy.image}' class='cell-image'>`
+        let unit = cell.occupiedBy
+        if(unit.current.hp === 0) {
+          htmlString += `<img id='${imageId}' src='${unit.images.dead}' class='cell-image'>`
+        } else {
+          htmlString += `<img id='${imageId}' src='${unit.images.default}' class='cell-image'>`
+        }
+
       }
 
       if(cell.indicator) {

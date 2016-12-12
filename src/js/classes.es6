@@ -46,7 +46,7 @@ class Cell {
 
 class Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items={}) {
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, images={}, items={}) {
     this.id = id
     this.x = x
     this.y = y
@@ -57,6 +57,7 @@ class Unit {
     this.dexterity = dexterity
     this.name = name
     this.image = image
+    this.images = images
     this.player = player
     this.hasTakenTurn = hasTakenTurn
     this.speed = speed
@@ -77,8 +78,8 @@ class Unit {
 
 class Warrior extends Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items) {
-    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, items)
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, images, items) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, images, items)
 
     this.primaryStat = 'strength'
     // console.log('constructing new warrior:')
@@ -91,11 +92,12 @@ class Warrior extends Unit {
 
 class Player {
 
-  constructor(username, handle, color, hasTakenTurn=false) {
+  constructor(username, handle, color, hasTakenTurn=false, disabled=false) {
     this.username = username
     this.handle = handle
     this.color = color
     this.hasTakenTurn = hasTakenTurn
+    this.disabled = disabled
   }
 
 }
