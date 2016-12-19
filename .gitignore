@@ -5,3 +5,4 @@ ignored/
 npm-debug.log
 **/*.sublime-workspace
 **/*.sublime-project
+**/*.zip

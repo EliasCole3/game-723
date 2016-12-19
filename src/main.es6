@@ -5,20 +5,20 @@ require('chosen/chosen.css')
 require('bootstrap/dist/js/bootstrap.js')
 require('bootstrap/dist/css/bootstrap.css')
 
-let img_mountains = require('./images/app/moutains.png')
-let img_water = require('./images/app/water.png')
-let img_warrior = require('./images/app/warrior.png')
+let img_mountains    = require('./images/app/moutains.png')
+let img_water        = require('./images/app/water.png')
+let img_warrior      = require('./images/app/warrior.png')
 let img_warrior_dead = require('./images/app/warrior-dead.png')
 
-let say = require('./js/sample1')
-let Cell = require('./js/classes.es6').Cell
-let Blah = require('./js/classes.es6').Blah
-let Unit = require('./js/classes.es6').Unit
-let Warrior = require('./js/classes.es6').Warrior
-let Player = require('./js/classes.es6').Player
+let say       = require('./js/sample1')
+let Cell      = require('./js/classes.es6').Cell
+let Blah      = require('./js/classes.es6').Blah
+let Unit      = require('./js/classes.es6').Unit
+let Warrior   = require('./js/classes.es6').Warrior
+let Player    = require('./js/classes.es6').Player
 let gameLogic = require('./js/game-logic.es6')
 let viewLogic = require('./js/view-logic.es6')
-let windows = require('./js/windows.es6')
+let windows   = require('./js/windows.es6')
 
 // import{Cell, Blah} from './js/classes.es6' //figure this out later
 
@@ -659,7 +659,7 @@ function currentPlayersTurnIsOver(gamestate) {
 
 
 function showUnitInfo(unit) {
-  htmlString = ``
+  let htmlString = ``
 
   let propertiesToNotShow = [
     'id',

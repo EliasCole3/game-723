@@ -1,8 +1,8 @@
-var CopyWebpackPlugin = require('copy-webpack-plugin')
-var path = require('path')
+let CopyWebpackPlugin = require('copy-webpack-plugin')
+let path              = require('path')
 
 module.exports = {
-  entry: ['./src/app.js'],
+  entry: ['./src/entryPoint.js'],
   output: {
     path: './dist',
     filename: 'bundle.js'
@@ -25,30 +25,20 @@ module.exports = {
           presets: ['es2015'] // shorthand for 'babel-loader?presets[]=es2015'. Only works when there's a single loader
         }
       },
-      // {
-      //   test: /\.ts/,
-      //   loaders: ['ts-loader'],
-      //   exclude: /node_modules/
-      // },
       {
-        test: /web_modules\/chosen\/.+\.(jsx|js)$/,
-        loader: 'imports?jQuery=jquery,$=jquery,this=>window'
-      },
-      // {
-      //   test: /web_modules\/keypress\/.+\.(jsx|js)$/,
-      //   loader: 'imports?jQuery=jquery,$=jquery,this=>window'
-      // },
-      {
-        // test: /node_modules\/eonasdan-bootstrap-datetimepicker\/build\/js\/bootstrap-datetimepicker.min.js$/,
-        test: /web_modules\/datetime-picker\/bootstrap-datetimepicker.js/,
+        test: [
+          /web_modules\/chosen\/.+\.(jsx|js)$/,
+          /web_modules\/datetime-picker\/bootstrap-datetimepicker.js/,
+          /node_modules\/moment\/locale/
+        ],
         loader: 'imports?jQuery=jquery,$=jquery,this=>window'
       },
       {
-        test: /src\/js\/view-logic\.es6$/,
-        loaders: ['imports?jQuery=jquery,$=jquery,this=>window', 'babel-loader?presets[]=es2015']
-      },
-      {
-        test: /src\/js\/windows\.es6$/,
+        test: [
+          /src\/js\/view-logic\.es6$/,
+          /src\/js\/windows\.es6$/,
+          /main\.es6$/
+        ],
         loaders: ['imports?jQuery=jquery,$=jquery,this=>window', 'babel-loader?presets[]=es2015']
       },
       {
@@ -56,10 +46,6 @@ module.exports = {
         test: /.+\.(jsx|js)$/,
         // http://reactkungfu.com/2015/10/integrating-jquery-chosen-with-webpack-using-imports-loader/
         loader: 'babel-loader!imports?jQuery=jquery,$=jquery,this=>window'
-      },
-      {
-        test: /node_modules\/moment\/locale/,
-        loader: 'imports?jQuery=jquery,$=jquery,this=>window'
       },
       {
       test: /\.(jpe?g|png|gif|svg)$/i,
