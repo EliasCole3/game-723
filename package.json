@@ -10,10 +10,6 @@
     "server": "webpack-dev-server --content-base dist/",
     "start": "webpack-dev-server --content-base dist/ && webpack --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@corpupsource01.corp.theplatform.com:elias.cole/webpack-template.git"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
