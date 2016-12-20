@@ -1,3 +1,5 @@
+import * as windows from 'windows.es6'
+
 function render(selector, gamestate) {
   $(selector).html(generateBoardHtml(gamestate))
 }
@@ -111,35 +113,57 @@ function cellIsSelectedSecondary(cell, gamestate) {
   return false
 }
 
-
-// function addCssAnimationToPage() {
-//   var style = document.createElement('style')
-//   style.type = 'text/css'
-//   style.innerHTML = 'body {}'
-//   document.getElementsByTagName('head')[0].appendChild(style)
-//   this.stylesheet = document.styleSheets[document.styleSheets.length-1]
-//   try {
-//     this.stylesheet.insertRule('\
-//   @-webkit-keyframes spinIt {\
-//       100% {\
-//           -webkit-transform: rotate(A_DYNAMIC_VALUE);\
-//       }\
-//   }\
-//   @-moz-keyframes spinIt {\
-//       100% {\
-//           -webkit-transform: rotate(A_DYNAMIC_VALUE);\
-//       }\
-//   }', this.stylesheet.rules.length);
-//       } catch (e) {};
-// }
-
-
 // todo: remove this after figuring out how import/exports work
 function logMessage(message) {
   $('#log-window-content').prepend(`${message}<br>`)
 }
 
-export {render, addPlayerAnimations, addGeneralAnimations}
+function setInitialMessages(gamestate) {
+  logMessage('Game started!')
+  logMessage('Top of round 1')
+  logMessage(`${gamestate.currentPlayer.handle}'s turn`)
+  $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
+}
+
+function createWindows() {
+  windows.createWindow({
+    windowId: 'message',
+    content: ``,
+    width: '450px',
+    height: '320px',
+    locationX: '300px',
+    locationY: '50px'
+  })
+
+  windows.createWindow({
+    windowId: 'log',
+    content: ``,
+    width: '450px',
+    height: '200px',
+    locationX: '300px',
+    locationY: '400px'
+  })
+
+  windows.createWindow({
+    windowId: 'context',
+    content: ``,
+    width: '450px',
+    height: '320px',
+    locationX: '800px',
+    locationY: '50px'
+  })
+
+  windows.createWindow({
+    windowId: 'actions',
+    content: ``,
+    width: '450px',
+    height: '320px',
+    locationX: '800px',
+    locationY: '400px'
+  })
+}
+
+export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows}
 
 
 

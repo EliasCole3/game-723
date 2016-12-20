@@ -1,29 +1,20 @@
-require('./css/jquery-ui.css')
-require('./scss/style')
-require('chosen/chosen.jquery')
-require('chosen/chosen.css')
-require('bootstrap/dist/js/bootstrap.js')
-require('bootstrap/dist/css/bootstrap.css')
+import './css/jquery-ui.css'
+import './scss/style'
+import 'chosen/chosen.jquery'
+import 'chosen/chosen.css'
+import 'bootstrap/dist/js/bootstrap.js'
+import 'bootstrap/dist/css/bootstrap.css'
+import keypress from 'keypress.js'
 
-let img_mountains    = require('./images/app/moutains.png')
-let img_water        = require('./images/app/water.png')
-let img_warrior      = require('./images/app/warrior.png')
-let img_warrior_dead = require('./images/app/warrior-dead.png')
+import img_mountains    from './images/app/moutains.png'
+import img_water        from './images/app/water.png'
+import img_warrior      from './images/app/warrior.png'
+import img_warrior_dead from './images/app/warrior-dead.png'
 
-let say       = require('./js/sample1')
-let Cell      = require('./js/classes.es6').Cell
-let Blah      = require('./js/classes.es6').Blah
-let Unit      = require('./js/classes.es6').Unit
-let Warrior   = require('./js/classes.es6').Warrior
-let Player    = require('./js/classes.es6').Player
-let gameLogic = require('./js/game-logic.es6')
-let viewLogic = require('./js/view-logic.es6')
-let windows   = require('./js/windows.es6')
+import { Cell, Unit, Warrior, Player } from './js/classes.es6'
 
-// import{Cell, Blah} from './js/classes.es6' //figure this out later
-
-let keypress = require('keypress.js')
-
+import * as gameLogic from './js/game-logic.es6'
+import * as viewLogic from './js/view-logic.es6'
 
 
 
@@ -76,56 +67,13 @@ $(() => {
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
-    createWindows()
-    setInitialMessages(gamestate)
+    viewLogic.createWindows()
+    viewLogic.setInitialMessages(gamestate)
   })
 
 })
 
-function setInitialMessages(gamestate) {
-  logMessage('Game started!')
-  logMessage('Top of round 1')
-  logMessage(`${gamestate.currentPlayer.handle}'s turn`)
-  $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
-}
 
-function createWindows() {
-  windows.createWindow({
-    windowId: 'message',
-    content: ``,
-    width: '450px',
-    height: '320px',
-    locationX: '300px',
-    locationY: '50px'
-  })
-
-  windows.createWindow({
-    windowId: 'log',
-    content: ``,
-    width: '450px',
-    height: '200px',
-    locationX: '300px',
-    locationY: '400px'
-  })
-
-  windows.createWindow({
-    windowId: 'context',
-    content: ``,
-    width: '450px',
-    height: '320px',
-    locationX: '800px',
-    locationY: '50px'
-  })
-
-  windows.createWindow({
-    windowId: 'actions',
-    content: ``,
-    width: '450px',
-    height: '320px',
-    locationX: '800px',
-    locationY: '400px'
-  })
-}
 
 function startHandler(gamestate) {
 

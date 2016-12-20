@@ -3,7 +3,6 @@ function getNextId(gamestate) {
 }
 
 function attack(attacker, defender, gamestate) {
-  // debugger
   let battleResults = {}
   battleResults.messages = []
 

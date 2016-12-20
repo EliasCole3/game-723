@@ -68,7 +68,7 @@ module.exports = {
   resolve: {
 
     //places to look for dependencies
-    modulesDirectories: ['node_modules', 'web_modules'],
+    modulesDirectories: ['node_modules', 'web_modules', 'src/js'],
 
     // lets us specify what kind of file types we can process without specifically giving them a file extension
     // require('./logger') instead of require('./logger.es6')
