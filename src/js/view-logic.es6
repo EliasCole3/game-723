@@ -1,4 +1,5 @@
 import * as windows from 'windows.es6'
+import * as utils from 'utilities.es6'
 
 function render(selector, gamestate) {
   $(selector).html(generateBoardHtml(gamestate))
@@ -163,7 +164,58 @@ function createWindows() {
   })
 }
 
-export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows}
+function addPlayerIndicators(gamestate) {
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      if(gamestate.board[x][y].occupiedBy) {
+        gamestate.board[x][y].indicator = `indicator-${gamestate.board[x][y].occupiedBy.player.username}`
+      }
+    }
+  }
+}
+
+function removePlayerIndicators(gamestate) {
+  let playerIndicators = []
+
+  gamestate.players.forEach(x => {
+    playerIndicators.push(`indicator-${x.username}`)
+  })
+
+  utils.forEachCell(gamestate, cell => {
+    if(playerIndicators.includes(cell.indicator)) {
+      cell.indicator = null
+    }
+  })
+}
+
+function addCurrentPlayerBorderToBoard(gamestate) {
+  $('#game-board').css({
+    'border': `10px groove #${gamestate.currentPlayer.color}`
+  })
+}
+
+function showUnitInfo(unit) {
+  let htmlString = ``
+
+  let propertiesToNotShow = [
+    'id',
+    'image',
+    'player',
+    'items',
+    'current'
+  ]
+
+  for(let prop in unit) {
+    // if the current property isn't in the list. Easier to blacklist than whitelist
+    if(!propertiesToNotShow.includes(prop)) {
+      htmlString += `${prop}: ${unit[prop]}<br>`
+    }
+  }
+
+  $('#context-window-content').html(htmlString)
+}
+
+export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo}
 
 
 

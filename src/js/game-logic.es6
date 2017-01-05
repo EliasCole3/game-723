@@ -1,3 +1,5 @@
+import * as utils from 'utilities.es6'
+
 function getNextId(gamestate) {
   return gamestate.nextUnitId++
 }
@@ -61,7 +63,7 @@ function rollDice(diceRollString) { //'1d4'
   let total = 0
   // console.log(`numberOfRolls: ${numberOfRolls}`)
   for(let i=0; i<numberOfRolls; i++) {
-    total += getRandomIntInclusive(1, die)
+    total += utils.getRandomIntInclusive(1, die)
   }
   return total
 }
@@ -138,11 +140,19 @@ function getAttributeBonus(attribute) {
   }
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
+function getCoordinatesForWeaponRange(weapon, x, y) {
+  let coordinates = []
+
+  if(weapon === 'axe' || weapon === 'axe of the gods') {
+    coordinates.push({x: x - 1, y: y})
+    coordinates.push({x: x + 1, y: y})
+    coordinates.push({x: x, y: y - 1})
+    coordinates.push({x: x, y: y + 1})
+  }
+
+  // bow, spear, etc.
+
+  return coordinates
 }
 
 
@@ -150,5 +160,4 @@ function getRandomIntInclusive(min, max) {
 
 
 
-
-export {getNextId, attack}
+export {getNextId, attack, getCoordinatesForWeaponRange}

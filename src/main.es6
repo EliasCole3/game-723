@@ -6,17 +6,19 @@ import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/dist/css/bootstrap.css'
 import keypress from 'keypress.js'
 
+// clean this up. I think these are only needed in the board files
 import img_mountains    from './images/app/moutains.png'
 import img_water        from './images/app/water.png'
 import img_warrior      from './images/app/warrior.png'
 import img_warrior_dead from './images/app/warrior-dead.png'
 
+import * as gameLogic   from './js/game-logic.es6'
+import * as viewLogic   from './js/view-logic.es6'
+import * as utils       from 'utilities.es6'
+
 import { Cell, Unit, Warrior, Player } from './js/classes.es6'
 
-import * as gameLogic from './js/game-logic.es6'
-import * as viewLogic from './js/view-logic.es6'
-
-
+import { getBoard as getBoard1 } from './js/boards/board1.es6'
 
 
 
@@ -62,11 +64,11 @@ $(() => {
   $('#board-size-y').chosen(config.chosenOptions)
 
   $('#start').on('click', e => {
-    viewLogic.addPlayerAnimations(gamestate)
-    viewLogic.addGeneralAnimations(gamestate)
     startHandler(gamestate)
     setKeyboardHandlers(gamestate)
     setNonBoardHandlers(gamestate)
+    viewLogic.addPlayerAnimations(gamestate)
+    viewLogic.addGeneralAnimations(gamestate)
     viewLogic.createWindows()
     viewLogic.setInitialMessages(gamestate)
   })
@@ -77,134 +79,17 @@ $(() => {
 
 function startHandler(gamestate) {
 
-  let boardsizeX = +$('#board-size-x option:selected').val()
-  let boardsizeY = +$('#board-size-y option:selected').val()
-  gamestate.boardsize.x = boardsizeX
-  gamestate.boardsize.y = boardsizeY
+  // let boardsizeX = +$('#board-size-x option:selected').val()
+  // let boardsizeY = +$('#board-size-y option:selected').val()
+  // gamestate.boardsize.x = boardsizeX
+  // gamestate.boardsize.y = boardsizeY
 
-  let board = []
+  gamestate.boardsize.x = 5
+  gamestate.boardsize.y = 5
 
-  for(let i=0; i<boardsizeX; i++) {
-    board.push([])
-  }
-
-  for(let x=0; x<boardsizeX; x++) {
-    for(let y=0; y<boardsizeY; y++) {
-      board[x][y] = new Cell(x, y, 'mountains', img_mountains)
-    }
-  }
-
-  board[1][1] = new Cell(1, 1, 'water', img_water)
-  board[1][2] = new Cell(1, 2, 'water', img_water)
-  board[2][2] = new Cell(2, 2, 'water', img_water)
-
-  let wargogsItems = {
-    equipped: {
-      weapon: 'axe',
-      armor: '',
-      healm: '',
-      boots: '',
-      ring: ''
-    },
-    inventory: {
-      quest: [],
-      consumables: [],
-      equippable: []
-    }
-  }
-
-  let wargrogsItems = {
-    equipped: {
-      weapon: 'axe of the gods',
-      armor: '',
-      healm: '',
-      boots: '',
-      ring: ''
-    },
-    inventory: {
-      quest: [],
-      consumables: [],
-      equippable: []
-    }
-  }
-
-  let joesItems = {
-    equipped: {
-      weapon: 'axe',
-      armor: '',
-      healm: '',
-      boots: '',
-      ring: ''
-    },
-    inventory: {
-      quest: [],
-      consumables: [],
-      equippable: []
-    }
-  }
-
-  let hanksItems = {
-    equipped: {
-      weapon: 'axe',
-      armor: '',
-      healm: '',
-      boots: '',
-      ring: ''
-    },
-    inventory: {
-      quest: [],
-      consumables: [],
-      equippable: []
-    }
-  }
-
-  let lightningsItems = {
-    equipped: {
-      weapon: 'axe',
-      armor: '',
-      healm: '',
-      boots: '',
-      ring: ''
-    },
-    inventory: {
-      quest: [],
-      consumables: [],
-      equippable: []
-    }
-  }
-
-  let thundersItems = {
-    equipped: {
-      weapon: 'axe',
-      armor: '',
-      healm: '',
-      boots: '',
-      ring: ''
-    },
-    inventory: {
-      quest: [],
-      consumables: [],
-      equippable: []
-    }
-  }
-
-  let warriorImages = {
-      default: img_warrior,
-      dead: img_warrior_dead
-    }
-
-  // board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', img_warrior, player1, false, 5, warriorImages, wargogsItems)
-  board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', img_warrior, player1, false, 4, warriorImages, wargrogsItems)
-  // board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', img_warrior, player2, false, 3, warriorImages, joesItems)
-  board[4][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 11, 12, 9, 'Hank', img_warrior, player2, false, 4, warriorImages, hanksItems)
-  // board[0][2].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 25, 12, 9, 'Lightning', img_warrior, player3, false, 4, warriorImages, lightningsItems)
-  board[0][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 22, 12, 9, 'Thunder', img_warrior, player3, false, 4, warriorImages, thundersItems)
-
-  gamestate.board = board
+  gamestate.board = getBoard1(gamestate)
 
   render(gamestate)
-
-
 }
 
 
@@ -236,40 +121,39 @@ function setKeyboardHandlers(gamestate) {
     keys: 'p',
     on_keydown: (e, countPressed, autoRepeat) => {
       if(autoRepeat) return
-      addPlayerIndicators(gamestate)
+      viewLogic.addPlayerIndicators(gamestate)
       render(gamestate)
     },
     on_keyup: (e, countPressed, autoRepeat) => {
-      removePlayerIndicators(gamestate)
+      viewLogic.removePlayerIndicators(gamestate)
       render(gamestate)
     }
   })
 
 }
 
-function addPlayerIndicators(gamestate) {
-  for(let x=0; x<gamestate.boardsize.x; x++) {
-    for(let y=0; y<gamestate.boardsize.y; y++) {
-      if(gamestate.board[x][y].occupiedBy) {
-        gamestate.board[x][y].indicator = `indicator-${gamestate.board[x][y].occupiedBy.player.username}`
-      }
-    }
-  }
-}
+function setNonBoardHandlers(gamestate) {
 
-function removePlayerIndicators(gamestate) {
-  let playerIndicators = []
-
-  gamestate.players.forEach(x => {
-    playerIndicators.push(`indicator-${x.username}`)
+  $('#end-turn').click(e => {
+    endTurn(gamestate)
   })
 
-  forEachCell(gamestate, cell => {
-    if(playerIndicators.includes(cell.indicator)) {
-      cell.indicator = null
-    }
+  $('#disable-player-1').click(e => {
+    gamestate.players[0].disabled = true
   })
+
+  $('#disable-player-2').click(e => {
+    gamestate.players[1].disabled = true
+  })
+
+  $('#disable-player-3').click(e => {
+    gamestate.players[2].disabled = true
+  })
+
 }
+
+
+
 
 function moveLeft(gamestate) {
   move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'left', gamestate)
@@ -314,7 +198,7 @@ function move(x, y, direction, gamestate) {
     newY > gamestate.boardsize.y-1
   ]
 
-  if(anyOfTheseAreTrue(conditions)) {
+  if(utils.anyOfTheseAreTrue(conditions)) {
     console.log('trying to move out of the world')
     return
   }
@@ -352,42 +236,23 @@ function move(x, y, direction, gamestate) {
   render(gamestate)
 
   // this is here so the unit position in the window will update
-  showUnitInfo(newCell.occupiedBy)
+  viewLogic.showUnitInfo(newCell.occupiedBy)
 }
 
-function setNonBoardHandlers(gamestate) {
 
-  $('#end-turn').click(e => {
-    endTurn(gamestate)
-  })
-
-  $('#disable-player-1').click(e => {
-    gamestate.players[0].disabled = true
-  })
-
-  $('#disable-player-2').click(e => {
-    gamestate.players[1].disabled = true
-  })
-
-  $('#disable-player-3').click(e => {
-    gamestate.players[2].disabled = true
-  })
-
-
-
-}
 
 function endTurn(gamestate) {
   logMessage(`${gamestate.currentPlayer.handle}'s turn ended`)
   gamestate.currentPlayer.hasTakenTurn = true
 
-  // always rotate players once, and keep going if multiple players are disabled
+  // progress to the next player, and keep going if multiple players are disabled
   do {
     gamestate.players.next()
     gamestate.currentPlayer = gamestate.players[gamestate.players.current]
   } while(gamestate.currentPlayer.disabled === true)
 
-  if(allPlayersHaveTakenTheirTurn(gamestate)) {
+  // reset turn bool for each player
+  if(utils.allPlayersHaveTakenTheirTurn(gamestate)) {
     gamestate.players.forEach(x => {
       x.hasTakenTurn = false
     })
@@ -396,15 +261,7 @@ function endTurn(gamestate) {
 
   $('#message-window-content').html(`It is currently ${gamestate.currentPlayer.handle}'s turn`)
   logMessage(`round ${gamestate.round}, ${gamestate.currentPlayer.handle}'s turn`)
-  addCurrentPlayerBorderToBoard(gamestate)
-}
-
-function allPlayersHaveTakenTheirTurn(gamestate) {
-  let playersDone = true
-  gamestate.players.forEach(x => {
-    if(!x.hasTakenTurn) playersDone = false
-  })
-  return playersDone
+  viewLogic.addCurrentPlayerBorderToBoard(gamestate)
 }
 
 function setHandlers(gamestate) {
@@ -435,7 +292,7 @@ function setHandlers(gamestate) {
 
       render(gamestate)
 
-      let cell = getCellFromCoordinates(x, y, gamestate)
+      let cell = utils.getCellFromCoordinates(x, y, gamestate)
 
       if(cell.indicator === 'indicator-weapon-range') {
         setActionsWindow_ConfirmAttack(gamestate)
@@ -467,7 +324,7 @@ function unitClicked(x, y, gamestate) {
   gamestate.selectedUnitId = unit.id
 
   setActionsWindow_BasicActions(gamestate)
-  showUnitInfo(unit)
+  viewLogic.showUnitInfo(unit)
 }
 
 
@@ -493,7 +350,7 @@ function setActionsWindow_BasicActions(gamestate) {
 
 function actionButtonHandlers_BasicActions(gamestate) {
   $('#action-attack').click(e => {
-    let unit = getUnitfromUnitId(gamestate)
+    let unit = utils.getUnitfromSelectedUnitId(gamestate)
     showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
     gamestate.currentMode = 'attack'
     setActionsWindow_CancelAttack(gamestate)
@@ -547,12 +404,12 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
     clearWeaponRange(gamestate)
 
     gamestate.players.forEach(player => {
-      if(allPlayersUnitsAreDead(player, gamestate)) {
+      if(utils.allPlayersUnitsAreDead(player, gamestate)) {
         player.disabled = true
       }
     })
 
-    if(currentPlayersTurnIsOver(gamestate)) {
+    if(utils.currentPlayersTurnIsOver(gamestate)) {
       endTurn(gamestate)
     }
 
@@ -561,6 +418,7 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
     render(gamestate)
 
     setActionsWindow_Empty(gamestate)
+
 
     // win condition
 
@@ -575,61 +433,14 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
 }
 
 
-function currentPlayersTurnIsOver(gamestate) {
-  let turnOver = true
-
-  // if there are any units that haven't taken their turn yet, the player's turn isn't done
-  forEachCell(gamestate, cell => {
-    // try {
-    //   console.log('**************************')
-    //   console.log(cell.occupiedBy)
-    //   console.log(cell.occupiedBy.player)
-    //   console.log(gamestate.currentPlayer)
-    //   console.log(gamestate.currentPlayer == cell.occupiedBy.player)
-    //   console.log(gamestate.currentPlayer === cell.occupiedBy.player)
-    //   console.log(cell.occupiedBy.hasTakenTurn)
-    //   console.log('**************************')
-    //   console.log()
-    // } catch(e) {
-    //   console.log('error')
-    // }
-
-    if(cell.occupiedBy && cell.occupiedBy.player === gamestate.currentPlayer) {
-      if(!cell.occupiedBy.hasTakenTurn) turnOver = false
-    }
-  })
-
-  return turnOver
-}
 
 
 
 
-
-function showUnitInfo(unit) {
-  let htmlString = ``
-
-  let propertiesToNotShow = [
-    'id',
-    'image',
-    'player',
-    'items',
-    'current'
-  ]
-
-  for(let prop in unit) {
-    // if the current property isn't in the list. Easier to blacklist than whitelist
-    if(!propertiesToNotShow.includes(prop)) {
-      htmlString += `${prop}: ${unit[prop]}<br>`
-    }
-  }
-
-  $('#context-window-content').html(htmlString)
-}
 
 function showWeaponRange(unit, x, y, gamestate) {
 
-  let coordinates = getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
+  let coordinates = gameLogic.getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
 
   coordinates.forEach(coord => {
     if(gamestate.board[coord.x] && gamestate.board[coord.x][coord.y]) {
@@ -640,23 +451,8 @@ function showWeaponRange(unit, x, y, gamestate) {
   render(gamestate)
 }
 
-function getCoordinatesForWeaponRange(weapon, x, y) {
-  let coordinates = []
-
-  if(weapon === 'axe' || weapon === 'axe of the gods') {
-    coordinates.push({x: x - 1, y: y})
-    coordinates.push({x: x + 1, y: y})
-    coordinates.push({x: x, y: y - 1})
-    coordinates.push({x: x, y: y + 1})
-  }
-
-  // bow, spear, etc.
-
-  return coordinates
-}
-
 function clearWeaponRange(gamestate) {
-  forEachCell(gamestate, cell => {
+  utils.forEachCell(gamestate, cell => {
     if(cell.indicator === 'indicator-weapon-range') {
       cell.indicator = null
     }
@@ -672,30 +468,6 @@ function clearSelectors(gamestate) {
   gamestate.selectedCellSecondary.y = null
 }
 
-function addCurrentPlayerBorderToBoard(gamestate) {
-  $('#game-board').css({
-    'border': `10px groove #${gamestate.currentPlayer.color}`
-  })
-}
-
-function allPlayersUnitsAreDead(player, gamestate) {
-  // if(player.handle === 'Oprah Windfury') debugger
-
-  let unitsAreDead = true
-
-  forAllUnitsOfAPlayer(player, gamestate, unit => {
-    if(unit.current.hp !== 0) unitsAreDead = false
-  })
-
-  return unitsAreDead
-}
-
-
-
-
-
-
-
 
 
 /*
@@ -706,66 +478,9 @@ Utility Functions
 
 function render(gamestate) {
   viewLogic.render('#game', gamestate)
-  addCurrentPlayerBorderToBoard(gamestate)
+  viewLogic.addCurrentPlayerBorderToBoard(gamestate)
   setHandlers(gamestate)
   // addPlayerIndicators(gamestate) // for debugging, but it is kind of nice
-}
-
-function getUnitfromUnitId(gamestate) {
-  let unit = null
-
-  for(let x=0; x<gamestate.boardsize.x; x++) {
-    for(let y=0; y<gamestate.boardsize.y; y++) {
-      if(gamestate.board[x][y].occupiedBy && gamestate.board[x][y].occupiedBy.id === gamestate.selectedUnitId) {
-        unit = gamestate.board[x][y].occupiedBy
-      }
-    }
-  }
-
-  return unit
-}
-
-function getCellFromCoordinates(x, y, gamestate) {
-  if(gamestate.board[x] && gamestate.board[x][y]) {
-    return gamestate.board[x][y]
-  } else {
-    console.log('illegal coordinates in getCellFromCoordinates(), returning null')
-    return null
-  }
-}
-
-function forEachCell(gamestate, callback) {
-  for(let x=0; x<gamestate.boardsize.x; x++) {
-    for(let y=0; y<gamestate.boardsize.y; y++) {
-      callback(gamestate.board[x][y])
-    }
-  }
-}
-
-function forAllUnitsOfAPlayer(player, gamestate, callback) {
-  for(let x=0; x<gamestate.boardsize.x; x++) {
-    for(let y=0; y<gamestate.boardsize.y; y++) {
-      let cell = gamestate.board[x][y]
-      if(cell.occupiedBy && cell.occupiedBy.player === player) {
-        let unit = cell.occupiedBy
-        callback(unit)
-      }
-    }
-  }
-}
-
-// console.log(anyOfTheseAreTrue([true, true, true]))
-// console.log(anyOfTheseAreTrue([true, true, false]))
-// console.log(anyOfTheseAreTrue([true, false, false]))
-// console.log(anyOfTheseAreTrue([false, false, false]))
-function anyOfTheseAreTrue(conditions) {
-  let returnValue = false
-
-  conditions.forEach(x => {
-    if(x) returnValue = true
-  })
-
-  return returnValue
 }
 
 function logMessage(message) {

@@ -68,6 +68,7 @@ module.exports = {
   resolve: {
 
     //places to look for dependencies
+    //https://webpack.github.io/docs/configuration.html#resolve-modulesdirectories
     modulesDirectories: ['node_modules', 'web_modules', 'src/js'],
 
     // lets us specify what kind of file types we can process without specifically giving them a file extension
