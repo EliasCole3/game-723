@@ -1,3 +1,5 @@
+'use strict'
+
 import * as utils from 'utilities.es6'
 
 function getNextId(gamestate) {

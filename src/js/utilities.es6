@@ -1,3 +1,5 @@
+'use strict'
+
 function forEachCell(gamestate, callback) {
   for(let x=0; x<gamestate.boardsize.x; x++) {
     for(let y=0; y<gamestate.boardsize.y; y++) {

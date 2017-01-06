@@ -1,23 +1,17 @@
+'use strict'
+
 import './css/jquery-ui.css'
 import './scss/style'
 import 'chosen/chosen.jquery'
 import 'chosen/chosen.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/dist/css/bootstrap.css'
-import keypress from 'keypress.js'
-
-// clean this up. I think these are only needed in the board files
-import img_mountains    from './images/app/moutains.png'
-import img_water        from './images/app/water.png'
-import img_warrior      from './images/app/warrior.png'
-import img_warrior_dead from './images/app/warrior-dead.png'
-
-import * as gameLogic   from './js/game-logic.es6'
-import * as viewLogic   from './js/view-logic.es6'
-import * as utils       from 'utilities.es6'
-
-import { Cell, Unit, Warrior, Player } from './js/classes.es6'
-
+import keypress                  from 'keypress.js'
+import * as gameLogic            from './js/game-logic.es6'
+import * as viewLogic            from './js/view-logic.es6'
+import * as utils                from 'utilities.es6'
+import * as movement             from 'movement.es6'
+import { Player }                from './js/classes.es6'
 import { getBoard as getBoard1 } from './js/boards/board1.es6'
 
 
@@ -102,19 +96,28 @@ function setKeyboardHandlers(gamestate) {
   })
 
   listener.simple_combo('left', () => {
-    moveLeft(gamestate)
+    movement.moveLeft(gamestate)
+    render(gamestate)
+    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('right', () => {
-    moveRight(gamestate)
+    movement.moveRight(gamestate)
+    render(gamestate)
+    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
+    // viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('up', () => {
-    moveUp(gamestate)
+    movement.moveUp(gamestate)
+    render(gamestate)
+    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('down', () => {
-    moveDown(gamestate)
+    movement.moveDown(gamestate)
+    render(gamestate)
+    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
   })
 
   listener.register_combo({
@@ -150,93 +153,6 @@ function setNonBoardHandlers(gamestate) {
     gamestate.players[2].disabled = true
   })
 
-}
-
-
-
-
-function moveLeft(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'left', gamestate)
-}
-
-function moveRight(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'right', gamestate)
-}
-
-function moveUp(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'up', gamestate)
-}
-
-function moveDown(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'down', gamestate)
-}
-
-function move(x, y, direction, gamestate) {
-  let newX = x
-  let newY = y
-
-  switch(direction) {
-    case 'left':
-      newX--
-      break
-    case 'right':
-      newX++
-      break
-    case 'up':
-      newY--
-      break
-    case 'down':
-      newY++
-      break
-  }
-
-  // world boundaries
-  let conditions = [
-    newX < 0,
-    newX > gamestate.boardsize.x-1,
-    newY < 0,
-    newY > gamestate.boardsize.y-1
-  ]
-
-  if(utils.anyOfTheseAreTrue(conditions)) {
-    console.log('trying to move out of the world')
-    return
-  }
-
-  let oldCell = gamestate.board[x][y]
-  let newCell = gamestate.board[newX][newY]
-
-  // if an empty cell is selected, and the user tries to move
-  if(!oldCell.occupiedBy) {
-    console.log('there\'s nothing in that cell to move')
-    return
-  }
-
-  // if, for whatever reason, the currently selected unit isn't actually in the currently selected cell
-  if(gamestate.selectedUnitId !== oldCell.occupiedBy.id) {
-    return
-  }
-
-  // if there's nothing in the new cell
-  if(newCell.occupiedBy !== null) {
-    console.log('cell is currently occupied')
-    return
-  }
-
-
-  newCell.occupiedBy = oldCell.occupiedBy
-  oldCell.occupiedBy = null
-
-  newCell.occupiedBy.x = newX
-  newCell.occupiedBy.y = newY
-
-  gamestate.selectedCell.x = newX
-  gamestate.selectedCell.y = newY
-
-  render(gamestate)
-
-  // this is here so the unit position in the window will update
-  viewLogic.showUnitInfo(newCell.occupiedBy)
 }
 
 

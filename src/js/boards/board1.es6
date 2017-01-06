@@ -1,3 +1,5 @@
+'use strict'
+
 import img_mountains    from '../../images/app/moutains.png' // this is stupid. Every time I try to fix it webpack won't cooperate -_-
 import img_water        from '../../images/app/water.png'
 import img_warrior      from '../../images/app/warrior.png'

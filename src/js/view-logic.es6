@@ -1,3 +1,5 @@
+'use strict'
+
 import * as windows from 'windows.es6'
 import * as utils from 'utilities.es6'
 
