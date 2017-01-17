@@ -11,6 +11,7 @@ function forEachCell(gamestate, callback) {
 // console.log(anyOfTheseAreTrue([true, true, true]))
 // console.log(anyOfTheseAreTrue([true, true, false]))
 // console.log(anyOfTheseAreTrue([true, false, false]))
+// console.log(anyOfTheseAreTrue([false, true, false]))
 // console.log(anyOfTheseAreTrue([false, false, false]))
 function anyOfTheseAreTrue(conditions) {
   let returnValue = false

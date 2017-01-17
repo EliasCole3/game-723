@@ -45,8 +45,13 @@ function move(x, y, direction, gamestate) {
     newY > gamestate.boardsize.y-1
   ]
 
+  // x and y start off null
+  conditions.push(x === null)
+  conditions.push(y === null)
+
   if(utils.anyOfTheseAreTrue(conditions)) {
-    console.log('trying to move out of the world')
+    // console.log('trying to move out of the world')
+    console.log('illegal move')
     return
   }
 

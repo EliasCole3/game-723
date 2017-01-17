@@ -99,25 +99,28 @@ function setKeyboardHandlers(gamestate) {
     movement.moveLeft(gamestate)
     render(gamestate)
     // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
+    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('right', () => {
     movement.moveRight(gamestate)
     render(gamestate)
     // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
-    // viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
+    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('up', () => {
     movement.moveUp(gamestate)
     render(gamestate)
     // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
+    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('down', () => {
     movement.moveDown(gamestate)
     render(gamestate)
     // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
+    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.register_combo({
@@ -141,17 +144,17 @@ function setNonBoardHandlers(gamestate) {
     endTurn(gamestate)
   })
 
-  $('#disable-player-1').click(e => {
-    gamestate.players[0].disabled = true
-  })
+  // $('#disable-player-1').click(e => {
+  //   gamestate.players[0].disabled = true
+  // })
 
-  $('#disable-player-2').click(e => {
-    gamestate.players[1].disabled = true
-  })
+  // $('#disable-player-2').click(e => {
+  //   gamestate.players[1].disabled = true
+  // })
 
-  $('#disable-player-3').click(e => {
-    gamestate.players[2].disabled = true
-  })
+  // $('#disable-player-3').click(e => {
+  //   gamestate.players[2].disabled = true
+  // })
 
 }
 
@@ -245,6 +248,9 @@ function unitClicked(x, y, gamestate) {
 
 
 
+//
+// Views
+//
 function setActionsWindow_Empty(gamestate) {
   $('#actions-window-content').html('')
 }
@@ -264,6 +270,29 @@ function setActionsWindow_BasicActions(gamestate) {
   actionButtonHandlers_BasicActions(gamestate)
 }
 
+function setActionsWindow_CancelAttack(gamestate) {
+  let htmlString = ``
+  htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
+  $('#actions-window-content').html(htmlString)
+
+  actionButtonHandlers_CancelAttack(gamestate)
+}
+
+function setActionsWindow_ConfirmAttack(gamestate) {
+  let htmlString = ``
+  htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
+  htmlString += `<button id='action-confirm-attack' class='btn btn-medium'>Confirm Attack</button>`
+  $('#actions-window-content').html(htmlString)
+
+  actionButtonHandlers_CancelAttack(gamestate)
+  actionButtonHandlers_ConfirmAttack(gamestate)
+}
+
+
+
+//
+// Handlers
+//
 function actionButtonHandlers_BasicActions(gamestate) {
   $('#action-attack').click(e => {
     let unit = utils.getUnitfromSelectedUnitId(gamestate)
@@ -271,15 +300,8 @@ function actionButtonHandlers_BasicActions(gamestate) {
     gamestate.currentMode = 'attack'
     setActionsWindow_CancelAttack(gamestate)
   })
-}
 
-
-
-function setActionsWindow_CancelAttack(gamestate) {
-  let htmlString = ``
-  htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
-  $('#actions-window-content').html(htmlString)
-  actionButtonHandlers_CancelAttack(gamestate)
+  // other basic actions...
 }
 
 function actionButtonHandlers_CancelAttack(gamestate) {
@@ -290,22 +312,12 @@ function actionButtonHandlers_CancelAttack(gamestate) {
   })
 }
 
-
-
-function setActionsWindow_ConfirmAttack(gamestate) {
-  let htmlString = ``
-  htmlString += `<button id='action-cancel-attack' class='btn btn-medium'>Cancel Attack</button>`
-  htmlString += `<button id='action-confirm-attack' class='btn btn-medium'>Confirm Attack</button>`
-  $('#actions-window-content').html(htmlString)
-  actionButtonHandlers_CancelAttack(gamestate)
-  actionButtonHandlers_ConfirmAttack(gamestate)
-
-}
-
 function actionButtonHandlers_ConfirmAttack(gamestate) {
   $('#action-confirm-attack').click(e => {
     let attacker = gamestate.board[gamestate.selectedCell.x][gamestate.selectedCell.y].occupiedBy
     let defender = gamestate.board[gamestate.selectedCellSecondary.x][gamestate.selectedCellSecondary.y].occupiedBy
+
+    // check for empty square
 
     let battleResults = gameLogic.attack(attacker, defender, gamestate)
 
@@ -357,6 +369,8 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
 function showWeaponRange(unit, x, y, gamestate) {
 
   let coordinates = gameLogic.getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
+
+  if(coordinates.length === 0) { console.log('weapon not listed in gameLogic.getCoordinatesForWeaponRange()') }
 
   coordinates.forEach(coord => {
     if(gamestate.board[coord.x] && gamestate.board[coord.x][coord.y]) {

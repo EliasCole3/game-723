@@ -1,7 +1,8 @@
 todo
 ------------------------
 Add medium and large bootstrap modals
-Figure out modular structure stuff(import/export, etc.)
+clear unit info after turn switch
+
 ------------------------
 
 
@@ -16,14 +17,13 @@ Full team turns or speed based turns?
 
 Features
 ---------------------
-Can't select a unit of a different player
 Determine possible move squares
 Limit movement to possible moves
-When friendly unit is selected, clicking on an enemy selects as target(if in range)
 Range finding algorithm
 non-unit map obstructions
 
 ---------------------
+
 
 Game Flow
 ---------------------

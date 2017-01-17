@@ -20,16 +20,16 @@ class Blah {
 
 }
 
-class Item {
+// class Item {
 
-  constructor(x, y, image, name) {
-    this.x = x
-    this.y = y
-    this.image = image
-    this.name = name
-  }
+//   constructor(x, y, image, name) {
+//     this.x = x
+//     this.y = y
+//     this.image = image
+//     this.name = name
+//   }
 
-}
+// }
 
 class Cell {
 
@@ -46,7 +46,7 @@ class Cell {
 
 class Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, images={}, items={}) {
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images={}, items={}) {
     this.id = id
     this.x = x
     this.y = y
@@ -59,16 +59,17 @@ class Unit {
     this.image = image
     this.images = images
     this.player = player
-    this.hasTakenTurn = hasTakenTurn
     this.speed = speed
     this.items = items
+
+    this.hasTakenTurn = false
     this.current = {
       hp: hp,
       mp: mp,
       strength: strength,
       intelligence: intelligence,
       dexterity: dexterity,
-      hasTakenTurn: hasTakenTurn,
+      hasTakenTurn: this.hasTakenTurn,
       speed: speed
     }
   }
@@ -78,14 +79,24 @@ class Unit {
 
 class Warrior extends Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, images, items) {
-    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, hasTakenTurn, speed, images, items)
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items)
 
     this.primaryStat = 'strength'
     // console.log('constructing new warrior:')
     // for(let prop in this) {
     //   console.log(prop, this[prop])
     // }
+  }
+
+}
+
+class Archer extends Unit {
+
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items)
+
+    this.primaryStat = 'dexterity'
   }
 
 }
@@ -114,6 +125,6 @@ class Player {
 // }
 
 
-export {Item, Cell, Blah, Unit, Warrior, Player}
+export {Cell, Blah, Unit, Warrior, Player}
 
 
