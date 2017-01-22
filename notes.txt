@@ -2,7 +2,9 @@ todo
 ------------------------
 Add medium and large bootstrap modals
 clear unit info after turn switch
-
+Unit class wrapper (e.g. getWarrior({param: value, etc.}))
+redo board terrain mapping(to a 2d array?)
+Make it so units can pass other friendly units on the board(occupiedBy goes to array)
 ------------------------
 
 

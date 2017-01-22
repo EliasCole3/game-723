@@ -104,6 +104,7 @@ function addPlayerAnimations(gamestate) {
 
 function addGeneralAnimations(gamestate) {
   addIndicatorAnimationToPage('weapon-range', '8e0404', 'e00202')
+  addIndicatorAnimationToPage('move-range', '8e0404', '02e002')
 }
 
 function cellIsSelected(cell, gamestate) {
@@ -132,18 +133,18 @@ function createWindows() {
   windows.createWindow({
     windowId: 'message',
     content: ``,
-    width: '450px',
+    width: '350px',
     height: '320px',
-    locationX: '300px',
+    locationX: '550px',
     locationY: '50px'
   })
 
   windows.createWindow({
     windowId: 'log',
     content: ``,
-    width: '450px',
+    width: '350px',
     height: '200px',
-    locationX: '300px',
+    locationX: '550px',
     locationY: '400px'
   })
 
@@ -152,7 +153,7 @@ function createWindows() {
     content: ``,
     width: '450px',
     height: '320px',
-    locationX: '800px',
+    locationX: '950px',
     locationY: '50px'
   })
 
@@ -161,7 +162,7 @@ function createWindows() {
     content: ``,
     width: '450px',
     height: '320px',
-    locationX: '800px',
+    locationX: '950px',
     locationY: '400px'
   })
 }

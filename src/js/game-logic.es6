@@ -157,9 +157,189 @@ function getCoordinatesForWeaponRange(weapon, x, y) {
   return coordinates
 }
 
+function getCoordinatesForMoveRange(gamestate, unit) {
+
+  let coordinates = getAvailableMoves(gamestate, unit.x, unit.y, unit.speed)
+
+  return coordinates
+}
+
+
+function getAvailableMoves(gamestate, x, y, movesLeft, moves=[]) {
+
+  let potentialCoordinates = [
+    {x: x - 1, y: y},
+    {x: x + 1, y: y},
+    {x: x, y: y - 1},
+    {x: x, y: y + 1}
+  ]
+
+  let board = gamestate.board
+
+  potentialCoordinates.forEach(cell => {
+    let x = cell.x
+    let y = cell.y
+
+    if(board[x] && board[x][y] && board[x][y].passable) {
+
+      if(!utils.arrayContainsObject(moves, cell)) {
+        moves.push(cell)
+      }
+
+      if(movesLeft > 1) {
+        getAvailableMoves(gamestate, cell.x, cell.y, movesLeft - 1).forEach(foundMove => {
+          if(!utils.arrayContainsObject(moves, foundMove)) {
+            moves.push(foundMove)
+          }
+        })
+      }
+
+    }
+
+
+  })
+
+  return moves
+}
+
+// function getCoordinatesForMoveRange(gamestate, unit) {
+//   // forEachCell(gamestate, cell => {})
+//   let coordinates = []
+
+//   let x = unit.x
+//   let y = unit.y
+//   let movesLeft = unit.speed
+
+//   console.log(unit.speed)
+
+//   let coordnates = markCells(x, y, movesLeft, [], gamestate)
+
+
+//   return coordinates
+// }
+
+// function markCells(x, y, movesLeft, cellsToMark, gamestate) {
+//   if(movesLeft === 0) return cellsToMark
+
+//   let potentialCoordinates = [
+//     {x: x - 1, y: y},
+//     {x: x + 1, y: y},
+//     {x: x, y: y - 1},
+//     {x: x, y: y + 1}
+//   ]
+
+//   // make sure the coordinates are still on the board
+
+//   potentialCoordinates.forEach(coordinate => {
+
+//     let cell = utils.getCellFromCoordinates(coordinate.x, coordinate.y, gamestate)
+
+//     if(cell.passable && movesLeft === 1) {
+//       cellsToMark.push(coordinate)
+//     }
+
+//     if(movesLeft > 1) {
+//       movesLeft--
+//       cellsToMark.push(...markCells(x, y, movesLeft, cellsToMark, gamestate))
+//     }
+
+//   })
+
+//   return cellsToMark
+// }
 
 
 
 
 
-export {getNextId, attack, getCoordinatesForWeaponRange}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export {getNextId, attack, getCoordinatesForWeaponRange, getCoordinatesForMoveRange}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

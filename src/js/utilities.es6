@@ -23,6 +23,21 @@ function anyOfTheseAreTrue(conditions) {
   return returnValue
 }
 
+// console.log(allOfTheseAreTrue([true, true, true]))
+// console.log(allOfTheseAreTrue([true, true, false]))
+// console.log(allOfTheseAreTrue([true, false, false]))
+// console.log(allOfTheseAreTrue([false, true, false]))
+// console.log(allOfTheseAreTrue([false, false, false]))
+function allOfTheseAreTrue(conditions) {
+  let returnValue = true
+
+  conditions.forEach(x => {
+    if(!x) returnValue = false
+  })
+
+  return returnValue
+}
+
 function getUnitfromSelectedUnitId(gamestate) {
   let unit = null
 
@@ -98,4 +113,31 @@ function allPlayersHaveTakenTheirTurn(gamestate) {
   return playersDone
 }
 
-export {forEachCell, anyOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms))
+// }
+
+function sleep(ms) {
+  var start = new Date().getTime(), expire = start + ms
+  while (new Date().getTime() < expire) { }
+  return
+}
+
+// only one level deepm meant for a flat array of flat objects
+// console.log(arrayContainsObject([{x: 1, y: 1}, {x: 2, y: 2}], {x: 0, y:0})) // should be false
+// console.log(arrayContainsObject([{x: 1, y: 1}, {x: 2, y: 2}], {x: 1, y:1})) // should be true
+function arrayContainsObject(array, object) {
+  let found = false
+  array.forEach(obj => {
+    let objectsMatch = true
+    for(let prop in object) {
+      if(object[prop] !== obj[prop]) {
+        objectsMatch = false
+      }
+    }
+    if(objectsMatch) found = true
+  })
+  return found
+}
+
+export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject}

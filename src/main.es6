@@ -42,13 +42,17 @@ let gamestate = {
   },
   board: null,
   boardsize: {
-    x: 5,
-    y: 5
+    x: 7,
+    y: 10
   },
   units: [],
   round: 1,
   selectedUnitId: null,
-  currentMode: 'default'
+  currentMode: 'default',
+  moveRevertCoordinates: {
+    x: null,
+    y: null
+  }
 }
 
 
@@ -67,6 +71,13 @@ $(() => {
     viewLogic.setInitialMessages(gamestate)
   })
 
+  $('#test-move').click(e => {
+    $('#start').click()
+    $('#2-1-image').click()
+    $('#action-move').click()
+    // utils.sleep(1000)
+  })
+
 })
 
 
@@ -78,8 +89,8 @@ function startHandler(gamestate) {
   // gamestate.boardsize.x = boardsizeX
   // gamestate.boardsize.y = boardsizeY
 
-  gamestate.boardsize.x = 5
-  gamestate.boardsize.y = 5
+  // gamestate.boardsize.x = 5
+  // gamestate.boardsize.y = 5
 
   gamestate.board = getBoard1(gamestate)
 
@@ -98,28 +109,24 @@ function setKeyboardHandlers(gamestate) {
   listener.simple_combo('left', () => {
     movement.moveLeft(gamestate)
     render(gamestate)
-    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
     viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('right', () => {
     movement.moveRight(gamestate)
     render(gamestate)
-    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
     viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('up', () => {
     movement.moveUp(gamestate)
     render(gamestate)
-    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
     viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
   listener.simple_combo('down', () => {
     movement.moveDown(gamestate)
     render(gamestate)
-    // viewLogic.showUnitInfo(newCell.occupiedBy) // this is here so the unit position in the window will update
     viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   })
 
@@ -155,10 +162,7 @@ function setNonBoardHandlers(gamestate) {
   // $('#disable-player-3').click(e => {
   //   gamestate.players[2].disabled = true
   // })
-
 }
-
-
 
 function endTurn(gamestate) {
   logMessage(`${gamestate.currentPlayer.handle}'s turn ended`)
@@ -256,14 +260,18 @@ function setActionsWindow_Empty(gamestate) {
 }
 
 function setActionsWindow_BasicActions(gamestate) {
+  let unit = utils.getUnitfromSelectedUnitId(gamestate)
+  let moveDisabled = unit.hasMoved ? 'disabled' : ''
+  let actionDisabled = unit.hasTakenAction ? 'disabled' : ''
+
   let htmlString = ``
-  htmlString += `<button id='action-move' class='btn btn-medium'>Move</button>`
-  htmlString += `<button id='action-attack' class='btn btn-medium'>Attack</button>`
-  htmlString += `<button id='action-defend' class='btn btn-medium'>Defend</button>`
-  htmlString += `<button id='action-items' class='btn btn-medium'>Items</button>`
-  htmlString += `<button id='action-magic' class='btn btn-medium'>Magic</button>`
-  htmlString += `<button id='action-special-talent' class='btn btn-medium'>Special Talent</button>`
-  htmlString += `<button id='end-turn' class='btn btn-medium'>Temporary - End Turn</button>`
+  htmlString += `<button id='action-move' class='btn btn-medium' ${moveDisabled}>Move</button>`
+  htmlString += `<button id='action-attack' class='btn btn-medium' ${actionDisabled}>Attack</button>`
+  htmlString += `<button id='action-defend' class='btn btn-medium' ${actionDisabled}>Defend</button>`
+  htmlString += `<button id='action-items' class='btn btn-medium' ${actionDisabled}>Items</button>`
+  htmlString += `<button id='action-magic' class='btn btn-medium' ${actionDisabled}>Magic</button>`
+  htmlString += `<button id='action-special-talent' class='btn btn-medium' ${actionDisabled}>Special Talent</button>`
+  htmlString += `<button id='end-turn' class='btn btn-medium' ${actionDisabled}>Temporary - End Turn</button>`
 
   $('#actions-window-content').html(htmlString)
 
@@ -288,6 +296,17 @@ function setActionsWindow_ConfirmAttack(gamestate) {
   actionButtonHandlers_ConfirmAttack(gamestate)
 }
 
+function setActionsWindow_Moving(gamestate) {
+  let htmlString = ``
+  htmlString += `<button id='action-cancel-move' class='btn btn-medium'>Cancel Move</button>`
+  htmlString += `<button id='action-confirm-move' class='btn btn-medium'>Confirm Move</button>`
+  $('#actions-window-content').html(htmlString)
+
+  actionButtonHandlers_CancelMove(gamestate)
+  actionButtonHandlers_ConfirmMove(gamestate)
+}
+
+
 
 
 //
@@ -296,9 +315,18 @@ function setActionsWindow_ConfirmAttack(gamestate) {
 function actionButtonHandlers_BasicActions(gamestate) {
   $('#action-attack').click(e => {
     let unit = utils.getUnitfromSelectedUnitId(gamestate)
-    showWeaponRange(unit, gamestate.selectedCell.x, gamestate.selectedCell.y, gamestate)
+    showWeaponRange(unit, gamestate)
     gamestate.currentMode = 'attack'
     setActionsWindow_CancelAttack(gamestate)
+  })
+
+  $('#action-move').click(e => {
+    let unit = utils.getUnitfromSelectedUnitId(gamestate)
+    gamestate.moveRevertCoordinates.x = unit.x
+    gamestate.moveRevertCoordinates.y = unit.y
+    showUnitMoveRange(unit, gamestate)
+    gamestate.currentMode = 'move'
+    setActionsWindow_Moving(gamestate)
   })
 
   // other basic actions...
@@ -307,8 +335,30 @@ function actionButtonHandlers_BasicActions(gamestate) {
 function actionButtonHandlers_CancelAttack(gamestate) {
   $('#action-cancel-attack').click(e => {
     gamestate.currentMode = 'default'
-    clearWeaponRange(gamestate)
+    clearWeaponRangeIndicators(gamestate)
     setActionsWindow_BasicActions(gamestate)
+  })
+}
+
+function actionButtonHandlers_CancelMove(gamestate) {
+  $('#action-cancel-move').click(e => {
+    gamestate.currentMode = 'default'
+    clearMoveRangeIndicators(gamestate)
+    setActionsWindow_BasicActions(gamestate)
+
+    // move unit back to where it started
+    let unit = utils.getUnitfromSelectedUnitId(gamestate)
+    let oldCell = utils.getCellFromCoordinates(unit.x, unit.y, gamestate)
+    console.log(gamestate.moveRevertCoordinates)
+    console.log(utils.getCellFromCoordinates(gamestate.moveRevertCoordinates.x, gamestate.moveRevertCoordinates.y, gamestate))
+    let newCell = utils.getCellFromCoordinates(gamestate.moveRevertCoordinates.x, gamestate.moveRevertCoordinates.y, gamestate)
+
+    // click move then click cancel without moving
+    if(newCell !== oldCell) {
+      movement.moveUnit(gamestate, oldCell, newCell)
+    }
+
+    render(gamestate)
   })
 }
 
@@ -321,7 +371,7 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
 
     let battleResults = gameLogic.attack(attacker, defender, gamestate)
 
-    attacker.hasTakenTurn = true
+    attacker.hasTakenAction = true
 
     battleResults.messages.forEach(x => {
       logMessage(x)
@@ -329,7 +379,7 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
 
     clearSelectors(gamestate)
 
-    clearWeaponRange(gamestate)
+    clearWeaponRangeIndicators(gamestate)
 
     gamestate.players.forEach(player => {
       if(utils.allPlayersUnitsAreDead(player, gamestate)) {
@@ -360,13 +410,26 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
   })
 }
 
+function actionButtonHandlers_ConfirmMove(gamestate) {
+  $('#action-confirm-move').click(e => {
+    gamestate.currentMode = 'default'
+    clearMoveRangeIndicators(gamestate)
+    let unit = utils.getUnitfromSelectedUnitId(gamestate)
+    unit.hasMoved = true
+    setActionsWindow_BasicActions(gamestate)
+    render(gamestate)
+  })
+}
 
 
 
 
 
 
-function showWeaponRange(unit, x, y, gamestate) {
+
+function showWeaponRange(unit, gamestate) {
+  let x = gamestate.selectedCell.x
+  let y = gamestate.selectedCell.y
 
   let coordinates = gameLogic.getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
 
@@ -381,9 +444,19 @@ function showWeaponRange(unit, x, y, gamestate) {
   render(gamestate)
 }
 
-function clearWeaponRange(gamestate) {
+function clearWeaponRangeIndicators(gamestate) {
   utils.forEachCell(gamestate, cell => {
     if(cell.indicator === 'indicator-weapon-range') {
+      cell.indicator = null
+    }
+  })
+
+  render(gamestate)
+}
+
+function clearMoveRangeIndicators(gamestate) {
+  utils.forEachCell(gamestate, cell => {
+    if(cell.indicator === 'indicator-move-range') {
       cell.indicator = null
     }
   })
@@ -398,6 +471,15 @@ function clearSelectors(gamestate) {
   gamestate.selectedCellSecondary.y = null
 }
 
+function showUnitMoveRange(unit, gamestate) {
+  let coordinates = gameLogic.getCoordinatesForMoveRange(gamestate, unit)
+
+  coordinates.forEach(coord => {
+    gamestate.board[coord.x][coord.y].indicator = `indicator-move-range`
+  })
+
+  render(gamestate)
+}
 
 
 /*

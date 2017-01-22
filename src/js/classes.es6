@@ -33,11 +33,12 @@ class Blah {
 
 class Cell {
 
-  constructor(x, y, cellType, backgroundImage, occupiedBy=null, indicator=null) {
+  constructor(x, y, cellType, backgroundImage, passable=true, occupiedBy=null, indicator=null) {
     this.x = x
     this.y = y
     this.cellType = cellType
     this.backgroundImage = backgroundImage
+    this.passable = passable
     this.occupiedBy = occupiedBy
     this.indicator = indicator
   }
@@ -46,7 +47,7 @@ class Cell {
 
 class Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images={}, items={}) {
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images={}, items={}, hasMoved=false, hasTakenAction=false) {
     this.id = id
     this.x = x
     this.y = y
@@ -56,7 +57,6 @@ class Unit {
     this.intelligence = intelligence
     this.dexterity = dexterity
     this.name = name
-    this.image = image
     this.images = images
     this.player = player
     this.speed = speed
@@ -79,8 +79,8 @@ class Unit {
 
 class Warrior extends Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items) {
-    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items)
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images, items, hasMoved, hasTakenAction) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images, items, hasMoved, hasTakenAction)
 
     this.primaryStat = 'strength'
     // console.log('constructing new warrior:')
@@ -93,10 +93,20 @@ class Warrior extends Unit {
 
 class Archer extends Unit {
 
-  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items) {
-    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, image, player, speed, images, items)
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images, items, hasMoved, hasTakenAction) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images, items, hasMoved, hasTakenAction)
 
     this.primaryStat = 'dexterity'
+  }
+
+}
+
+class Wizard extends Unit {
+
+  constructor(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images, items, hasMoved, hasTakenAction) {
+    super(id, x, y, hp, mp, strength, intelligence, dexterity, name, player, speed, images, items, hasMoved, hasTakenAction)
+
+    this.primaryStat = 'intelligence'
   }
 
 }
@@ -125,6 +135,6 @@ class Player {
 // }
 
 
-export {Cell, Blah, Unit, Warrior, Player}
+export {Cell, Blah, Unit, Warrior, Archer, Wizard, Player}
 
 

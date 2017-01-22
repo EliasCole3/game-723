@@ -19,6 +19,8 @@ function moveDown(gamestate) {
 }
 
 function move(x, y, direction, gamestate) {
+  if(gamestate.currentMode !== 'move') return
+
   let newX = x
   let newY = y
 
@@ -69,24 +71,35 @@ function move(x, y, direction, gamestate) {
     return
   }
 
-  // if there's nothing in the new cell
+  // // if there's something in the new cell
   if(newCell.occupiedBy !== null) {
     console.log('cell is currently occupied')
     return
   }
 
+  if(newCell.indicator !== 'indicator-move-range') {
+    console.log('can only move where you\'re supposed to')
+    return
+  }
 
+  moveUnit(gamestate, oldCell, newCell)
+}
+
+function moveUnit(gamestate, oldCell, newCell) {
+  // the actual move
   newCell.occupiedBy = oldCell.occupiedBy
   oldCell.occupiedBy = null
 
-  newCell.occupiedBy.x = newX
-  newCell.occupiedBy.y = newY
+  // setting the unit's internal coordinates
+  newCell.occupiedBy.x = newCell.x
+  newCell.occupiedBy.y = newCell.y
 
-  gamestate.selectedCell.x = newX
-  gamestate.selectedCell.y = newY
+  // moves the selector along, to allow for continuous movement
+  gamestate.selectedCell.x = newCell.x
+  gamestate.selectedCell.y = newCell.y
 }
 
-export {moveLeft, moveRight, moveUp, moveDown}
+export {moveLeft, moveRight, moveUp, moveDown, moveUnit}
 
 
 
