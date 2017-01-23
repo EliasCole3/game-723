@@ -61,6 +61,18 @@ function getCellFromCoordinates(x, y, gamestate) {
   }
 }
 
+function forAllUnits(gamestate, callback) {
+  for(let x=0; x<gamestate.boardsize.x; x++) {
+    for(let y=0; y<gamestate.boardsize.y; y++) {
+      let cell = gamestate.board[x][y]
+      if(cell.occupiedBy) {
+        let unit = cell.occupiedBy
+        callback(unit)
+      }
+    }
+  }
+}
+
 function forAllUnitsOfAPlayer(player, gamestate, callback) {
   for(let x=0; x<gamestate.boardsize.x; x++) {
     for(let y=0; y<gamestate.boardsize.y; y++) {
@@ -108,7 +120,7 @@ function currentPlayersTurnIsOver(gamestate) {
 function allPlayersHaveTakenTheirTurn(gamestate) {
   let playersDone = true
   gamestate.players.forEach(x => {
-    if(!x.hasTakenTurn) playersDone = false
+    if(!x.disabled && !x.hasTakenTurn) playersDone = false // if player is alive and hasn't taken their turn
   })
   return playersDone
 }
@@ -140,4 +152,4 @@ function arrayContainsObject(array, object) {
   return found
 }
 
-export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject}
+export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnits, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject}
