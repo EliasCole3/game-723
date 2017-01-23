@@ -19,10 +19,6 @@ Full team turns or speed based turns?
 
 Features
 ---------------------
-Determine possible move squares
-Limit movement to possible moves
-Range finding algorithm
-non-unit map obstructions
 
 ---------------------
 

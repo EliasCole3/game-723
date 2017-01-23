@@ -78,6 +78,47 @@ $(() => {
     // utils.sleep(1000)
   })
 
+  $('#test-full-round').click(e => {
+    $('#start').click()
+
+    $('#0-1-image').click()
+    $('#action-move').click()
+    movement.moveDown(gamestate)
+    movement.moveDown(gamestate)
+    render(gamestate)
+    $('#action-confirm-move').click()
+
+    $('#action-attack').click()
+    $('#0-4-image').click()
+    $('#action-confirm-attack').click()
+
+    $('#end-turn').click()
+
+    $('#3-2-image').click()
+    $('#action-move').click()
+    movement.moveUp(gamestate)
+    render(gamestate)
+    $('#action-confirm-move').click()
+
+    $('#action-attack').click()
+    $('#2-1-image').click()
+    $('#action-confirm-attack').click()
+
+    $('#end-turn').click()
+    console.log(gamestate)
+
+
+    // utils.sleep(1000)
+  })
+
+  // function pressDownArrow() {
+  //   // $('body').trigger($.Event('keydown', { keyCode: 40}))
+  //   // $('#wrapper').trigger($.Event('keydown', { keyCode: 40}))
+  //   // $('body').simulateKeyPress(40)
+  // }
+
+
+
 })
 
 
@@ -179,6 +220,12 @@ function endTurn(gamestate) {
     gamestate.players.forEach(x => {
       x.hasTakenTurn = false
     })
+
+    forAllUnits(gamestate, unit => {
+      unit.hasMoved = true
+      unit.hasTakenAction= true
+    })
+
     gamestate.round++
   }
 
@@ -349,8 +396,6 @@ function actionButtonHandlers_CancelMove(gamestate) {
     // move unit back to where it started
     let unit = utils.getUnitfromSelectedUnitId(gamestate)
     let oldCell = utils.getCellFromCoordinates(unit.x, unit.y, gamestate)
-    console.log(gamestate.moveRevertCoordinates)
-    console.log(utils.getCellFromCoordinates(gamestate.moveRevertCoordinates.x, gamestate.moveRevertCoordinates.y, gamestate))
     let newCell = utils.getCellFromCoordinates(gamestate.moveRevertCoordinates.x, gamestate.moveRevertCoordinates.y, gamestate)
 
     // click move then click cancel without moving
