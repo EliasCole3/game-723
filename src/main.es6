@@ -11,6 +11,7 @@ import * as gameLogic            from './js/game-logic.es6'
 import * as viewLogic            from './js/view-logic.es6'
 import * as utils                from 'utilities.es6'
 import * as movement             from 'movement.es6'
+import * as animations           from 'animations.es6'
 import { Player }                from './js/classes.es6'
 import { getBoard as getBoard1 } from './js/boards/board1.es6'
 
@@ -56,7 +57,10 @@ let gamestate = {
 }
 
 
+
 $(() => {
+
+  // animations.test()
 
   $('#board-size-x').chosen(config.chosenOptions)
   $('#board-size-y').chosen(config.chosenOptions)
@@ -107,10 +111,9 @@ $(() => {
     $('#end-turn').click()
     console.log(gamestate)
 
-
-    // utils.sleep(1000)
   })
 
+  // Not allowed for browser security. I'm just used to having it from selenium driver tests
   // function pressDownArrow() {
   //   // $('body').trigger($.Event('keydown', { keyCode: 40}))
   //   // $('#wrapper').trigger($.Event('keydown', { keyCode: 40}))
@@ -416,6 +419,8 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
     let defender = gamestate.board[gamestate.selectedCellSecondary.x][gamestate.selectedCellSecondary.y].occupiedBy
 
     // check for empty square
+
+    animations.attack(gamestate, attacker, defender)
 
     let battleResults = gameLogic.attack(attacker, defender, gamestate)
 

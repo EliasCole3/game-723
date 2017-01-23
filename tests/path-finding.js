@@ -92,7 +92,7 @@ function getAvailableMoves(x, y, movesLeft, moves=[]) {
   return moves
 }
 
-// only one level deep
+// only one level deepm meant for a flat array of flat objects
 // console.log(arrayContainsObject([{x: 1, y: 1}, {x: 2, y: 2}], {x: 0, y:0})) // should be false
 // console.log(arrayContainsObject([{x: 1, y: 1}, {x: 2, y: 2}], {x: 1, y:1})) // should be true
 function arrayContainsObject(array, object) {

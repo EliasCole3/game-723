@@ -104,6 +104,10 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+function getRandomAngleInRadians() {
+  return Math.random() * Math.PI * 2
+}
+
 function currentPlayersTurnIsOver(gamestate) {
   let turnOver = true
 
@@ -152,4 +156,6 @@ function arrayContainsObject(array, object) {
   return found
 }
 
-export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnits, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject}
+
+
+export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnits, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, getRandomAngleInRadians, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject}

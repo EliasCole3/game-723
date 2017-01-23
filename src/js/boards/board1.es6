@@ -149,6 +149,21 @@ function getBoard(gamestate) {
     }
   }
 
+  let longarrowsItems = {
+    equipped: {
+      weapon: 'long bow',
+      armor: '',
+      healm: '',
+      boots: '',
+      ring: ''
+    },
+    inventory: {
+      quest: [],
+      consumables: [],
+      equippable: []
+    }
+  }
+
   let saruseksItems = {
     equipped: {
       weapon: 'basic staff',
@@ -182,6 +197,7 @@ function getBoard(gamestate) {
   // board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', gamestate.players[0], 5, warriorImages, wargogsItems)
   board[0][1].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 1, 22, 0, 11, 10, 8, 'wargrog', gamestate.players[0], 4, warriorImages, wargrogsItems)
   board[1][1].occupiedBy = new Archer(gameLogic.getNextId(gamestate), 1, 1, 12, 0, 8, 11, 16, 'arrow', gamestate.players[0], 5, archerImages, arrowsItems)
+  board[1][0].occupiedBy = new Archer(gameLogic.getNextId(gamestate), 1, 0, 12, 0, 8, 11, 16, 'longarrow', gamestate.players[0], 5, archerImages, longarrowsItems)
   board[2][1].occupiedBy = new Wizard(gameLogic.getNextId(gamestate), 2, 1, 10, 16, 6, 18, 12, 'sarusek', gamestate.players[0], 3, wizardImages, saruseksItems)
 
   // board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', gamestate.players[1], 3, warriorImages, joesItems)

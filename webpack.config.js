@@ -37,6 +37,7 @@ module.exports = {
         test: [
           /src\/js\/view-logic\.es6$/,
           /src\/js\/windows\.es6$/,
+          /src\/js\/animations\.es6$/,
           /main\.es6$/
         ],
         loaders: ['imports?jQuery=jquery,$=jquery,this=>window', 'babel-loader?presets[]=es2015']

@@ -45,8 +45,16 @@ function getDamageMitigation(defender) {
 }
 
 function getDiceRollForWeapon(weapon) {
-  if(weapon === 'axe') {
+  if(weapon === 'basic staff') {
     return '1d6'
+  }
+
+  if(weapon === 'axe') {
+    return '1d8'
+  }
+
+  if(weapon === 'basic bow') {
+    return '1d10'
   }
 
   if(weapon === 'axe of the gods') {
@@ -56,14 +64,11 @@ function getDiceRollForWeapon(weapon) {
   return '1d4'
 }
 
-function rollDice(diceRollString) { //'1d4'
-  // console.log('rolling dice')
-  // console.log(`dice string: ${diceRollString}`)
+function rollDice(diceRollString) { // ex: '1d4'
   let pieces = diceRollString.split('d')
   let numberOfRolls = +pieces[0]
   let die = +pieces[1]
   let total = 0
-  // console.log(`numberOfRolls: ${numberOfRolls}`)
   for(let i=0; i<numberOfRolls; i++) {
     total += utils.getRandomIntInclusive(1, die)
   }
@@ -145,11 +150,40 @@ function getAttributeBonus(attribute) {
 function getCoordinatesForWeaponRange(weapon, x, y) {
   let coordinates = []
 
-  if(weapon === 'axe' || weapon === 'axe of the gods') {
+  if(weapon === 'axe' || weapon === 'axe of the gods' || weapon === 'basic staff') {
     coordinates.push({x: x - 1, y: y})
     coordinates.push({x: x + 1, y: y})
     coordinates.push({x: x, y: y - 1})
     coordinates.push({x: x, y: y + 1})
+  }
+
+  if(weapon === 'basic bow') {
+    coordinates.push({x: x - 1, y: y - 1})
+    coordinates.push({x: x - 1, y: y + 1})
+    coordinates.push({x: x + 1, y: y - 1})
+    coordinates.push({x: x + 1, y: y + 1})
+
+    coordinates.push({x: x + 2, y: y})
+    coordinates.push({x: x, y: y + 2})
+    coordinates.push({x: x - 2, y: y})
+    coordinates.push({x: x, y: y - 2})
+  }
+
+  if(weapon === 'long bow') {
+    coordinates.push({x: x - 1, y: y - 1})
+    coordinates.push({x: x - 1, y: y + 1})
+    coordinates.push({x: x + 1, y: y - 1})
+    coordinates.push({x: x + 1, y: y + 1})
+
+    coordinates.push({x: x + 2, y: y})
+    coordinates.push({x: x, y: y + 2})
+    coordinates.push({x: x - 2, y: y})
+    coordinates.push({x: x, y: y - 2})
+
+    coordinates.push({x: x + 3, y: y})
+    coordinates.push({x: x, y: y + 3})
+    coordinates.push({x: x - 3, y: y})
+    coordinates.push({x: x, y: y - 3})
   }
 
   // bow, spear, etc.
@@ -196,57 +230,10 @@ function getAvailableMoves(gamestate, x, y, movesLeft, moves=[]) {
 
     }
 
-
   })
 
   return moves
 }
-
-// function getCoordinatesForMoveRange(gamestate, unit) {
-//   // forEachCell(gamestate, cell => {})
-//   let coordinates = []
-
-//   let x = unit.x
-//   let y = unit.y
-//   let movesLeft = unit.speed
-
-//   console.log(unit.speed)
-
-//   let coordnates = markCells(x, y, movesLeft, [], gamestate)
-
-
-//   return coordinates
-// }
-
-// function markCells(x, y, movesLeft, cellsToMark, gamestate) {
-//   if(movesLeft === 0) return cellsToMark
-
-//   let potentialCoordinates = [
-//     {x: x - 1, y: y},
-//     {x: x + 1, y: y},
-//     {x: x, y: y - 1},
-//     {x: x, y: y + 1}
-//   ]
-
-//   // make sure the coordinates are still on the board
-
-//   potentialCoordinates.forEach(coordinate => {
-
-//     let cell = utils.getCellFromCoordinates(coordinate.x, coordinate.y, gamestate)
-
-//     if(cell.passable && movesLeft === 1) {
-//       cellsToMark.push(coordinate)
-//     }
-
-//     if(movesLeft > 1) {
-//       movesLeft--
-//       cellsToMark.push(...markCells(x, y, movesLeft, cellsToMark, gamestate))
-//     }
-
-//   })
-
-//   return cellsToMark
-// }
 
 
 
