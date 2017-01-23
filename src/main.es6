@@ -272,6 +272,7 @@ function setHandlers(gamestate) {
       }
     }
 
+    // necessary?
     if(gamestate.currentMode === 'move') {
 
     }
@@ -462,12 +463,18 @@ function actionButtonHandlers_ConfirmAttack(gamestate) {
 
 function actionButtonHandlers_ConfirmMove(gamestate) {
   $('#action-confirm-move').click(e => {
-    gamestate.currentMode = 'default'
-    clearMoveRangeIndicators(gamestate)
     let unit = utils.getUnitfromSelectedUnitId(gamestate)
-    unit.hasMoved = true
-    setActionsWindow_BasicActions(gamestate)
-    render(gamestate)
+    let cell = utils.getCellFromCoordinates(unit.x, unit.y, gamestate)
+    if(cell.unitMovingThrough === null) { // unit is not occupying someone else's square
+      gamestate.currentMode = 'default'
+      clearMoveRangeIndicators(gamestate)
+      unit.hasMoved = true
+      setActionsWindow_BasicActions(gamestate)
+      render(gamestate)
+    } else {
+      console.log('can\'t place a unit on top of another unit')
+    }
+
   })
 }
 

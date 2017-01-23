@@ -46,6 +46,9 @@ function getUnitfromSelectedUnitId(gamestate) {
       if(gamestate.board[x][y].occupiedBy && gamestate.board[x][y].occupiedBy.id === gamestate.selectedUnitId) {
         unit = gamestate.board[x][y].occupiedBy
       }
+      if(gamestate.board[x][y].unitMovingThrough && gamestate.board[x][y].unitMovingThrough.id === gamestate.selectedUnitId) {
+        unit = gamestate.board[x][y].unitMovingThrough
+      }
     }
   }
 
@@ -156,6 +159,10 @@ function arrayContainsObject(array, object) {
   return found
 }
 
+function unitsAreAllies(unitA, unitB) {
+  return unitA.player === unitB.player
+}
 
 
-export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnits, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, getRandomAngleInRadians, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject}
+
+export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnits, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, getRandomAngleInRadians, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject, unitsAreAllies}

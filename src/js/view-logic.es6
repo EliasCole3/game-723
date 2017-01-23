@@ -39,7 +39,16 @@ function generateBoardHtml(gamestate) {
         } else {
           htmlString += `<img id='${imageId}' src='${unit.images.default}' class='cell-image'>`
         }
+      }
 
+      // to allow movement over allies and corpses
+      if(cell.unitMovingThrough) {
+        let unit = cell.unitMovingThrough
+        if(unit.current.hp === 0) {
+          htmlString += `<img id='${imageId}' src='${unit.images.dead}' class='cell-image'>`
+        } else {
+          htmlString += `<img id='${imageId}' src='${unit.images.default}' class='cell-image'>`
+        }
       }
 
       if(cell.indicator) {

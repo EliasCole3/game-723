@@ -33,7 +33,7 @@ class Blah {
 
 class Cell {
 
-  constructor(x, y, cellType, backgroundImage, passable=true, occupiedBy=null, indicator=null) {
+  constructor(x, y, cellType, backgroundImage, passable=true, occupiedBy=null, indicator=null, unitMovingThrough=null) {
     this.x = x
     this.y = y
     this.cellType = cellType
@@ -41,6 +41,7 @@ class Cell {
     this.passable = passable
     this.occupiedBy = occupiedBy
     this.indicator = indicator
+    this.unitMovingThrough = unitMovingThrough
   }
 
 }
