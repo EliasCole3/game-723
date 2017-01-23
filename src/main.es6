@@ -220,16 +220,13 @@ function endTurn(gamestate) {
 
   // reset turn bool for each player
   if(utils.allPlayersHaveTakenTheirTurn(gamestate)) {
-    console.log('called')
     gamestate.players.forEach(x => {
       x.hasTakenTurn = false
     })
 
     utils.forAllUnits(gamestate, unit => {
-      // console.log(unit)
       unit.hasMoved = false
       unit.hasTakenAction = false
-      // console.log(unit)
     })
 
     gamestate.round++

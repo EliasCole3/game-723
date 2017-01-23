@@ -2,6 +2,7 @@
 
 import greensock from 'greensock.js'
 import * as utils from 'utilities.es6'
+import { Warrior, Archer, Wizard } from 'classes.es6'
 
 // function test() {
 
@@ -18,17 +19,30 @@ import * as utils from 'utilities.es6'
 // }
 
 function attack(gamestate, attacker, defender) {
-  burstOfStars({
-    originX: 400,
-    originY: 400,
-    destinationX: 800,
-    destinationY: 200,
-    spread: 30,
-    amount: 500,
-    duration: 2,
-    startColor: 'cyan',
-    finishColor: 'black'
-  })
+  let attackerBox = document.getElementById(`${attacker.x}-${attacker.y}`).getBoundingClientRect()
+  let defenderBox = document.getElementById(`${defender.x}-${defender.y}`).getBoundingClientRect()
+
+  let attackerMidX = (attackerBox.right + attackerBox.left) / 2
+  let attackerMidY = (attackerBox.top + attackerBox.bottom) / 2
+  let defenderMidX = (defenderBox.right + defenderBox.left) / 2
+  let defenderMidY = (defenderBox.top + defenderBox.bottom) / 2
+
+  if(attacker instanceof Wizard) {
+    burstOfStars({
+      originX: attackerMidX,
+      originY: attackerMidY,
+      destinationX: defenderMidX,
+      destinationY: defenderMidY,
+      spread: 25,
+      amount: 500,
+      duration: 2,
+      startColor: 'yellow',
+      finishColor: 'black'
+    })
+  }
+
+
+
 }
 
 
