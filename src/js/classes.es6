@@ -1,24 +1,6 @@
-// module.exports = class Cell {
+'use strict'
 
-//   constructor(x, y, cellType, backgroundImage) {
-//     this.x = x
-//     this.y = y
-//     this.cellType = cellType
-//     this.backgroundImage = backgroundImage
-//   }
-
-// }
-
-class Blah {
-
-  constructor(x, y, cellType, backgroundImage) {
-    this.x = x
-    this.y = y
-    this.cellType = cellType
-    this.backgroundImage = backgroundImage
-  }
-
-}
+import * as gameLogic from './game-logic.es6'
 
 // class Item {
 
@@ -124,18 +106,42 @@ class Player {
 
 }
 
-// function setConstructorParams() {
+class Item {
 
-// }
+  constructor(x, y, image, name) {
+    this.x = x
+    this.y = y
+    this.image = image
+    this.name = name
+  }
+
+}
+
+function addUnitToBoard(gamestate, board, params) {
+  board[params.x][params.y].occupiedBy = new params.class (
+    gameLogic.getNextId(gamestate),
+    params.x,
+    params.y,
+    params.hp,
+    params.mp,
+    params.str,
+    params.int,
+    params.dex,
+    params.name,
+    params.player,
+    params.speed,
+    params.images,
+    params.items
+  )
+}
 
 
-// constructor(...params) {
-//   params.forEach(x => {
-//     this[x] = x
-//   })
-// }
 
 
-export {Cell, Blah, Unit, Warrior, Archer, Wizard, Player}
+
+
+
+
+export {Cell, Unit, Warrior, Archer, Wizard, Player, addUnitToBoard}
 
 
