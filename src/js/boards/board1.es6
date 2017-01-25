@@ -195,7 +195,7 @@ function getBoard(gamestate) {
     dead: img_wizard_dead
   }
 
-  // board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', gamestate.players[0], 5, warriorImages, wargogsItems)
+
 
   addUnitToBoard(gamestate, board, {
     class: Warrior,
@@ -213,15 +213,102 @@ function getBoard(gamestate) {
     items: wargrogsItems
   })
 
-  board[1][1].occupiedBy = new Archer(gameLogic.getNextId(gamestate), 1, 1, 12, 0, 8, 11, 16, 'arrow', gamestate.players[0], 5, archerImages, arrowsItems)
-  board[1][0].occupiedBy = new Archer(gameLogic.getNextId(gamestate), 1, 0, 12, 0, 8, 11, 16, 'longarrow', gamestate.players[0], 5, archerImages, longarrowsItems)
-  board[2][1].occupiedBy = new Wizard(gameLogic.getNextId(gamestate), 2, 1, 10, 16, 6, 18, 12, 'sarusek', gamestate.players[0], 3, wizardImages, saruseksItems)
+  addUnitToBoard(gamestate, board, {
+    class: Archer,
+    x: 1,
+    y: 1,
+    hp: 12,
+    mp: 0,
+    str: 8,
+    int: 11,
+    dex: 16,
+    name: 'arrow',
+    player: gamestate.players[0],
+    speed: 5,
+    images: archerImages,
+    items: arrowsItems
+  })
+
+  addUnitToBoard(gamestate, board, {
+    class: Archer,
+    x: 1,
+    y: 0,
+    hp: 12,
+    mp: 0,
+    str: 9,
+    int: 12,
+    dex: 17,
+    name: 'longarrow',
+    player: gamestate.players[0],
+    speed: 5,
+    images: archerImages,
+    items: longarrowsItems
+  })
+
+  addUnitToBoard(gamestate, board, {
+    class: Wizard,
+    x: 2,
+    y: 1,
+    hp: 10,
+    mp: 16,
+    str: 6,
+    int: 18,
+    dex: 12,
+    name: 'sarusek',
+    player: gamestate.players[0],
+    speed: 3,
+    images: wizardImages,
+    items: saruseksItems
+  })
+
+
+  // board[2][3].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 2, 3, 20, 0, 25, 13, 12, 'wargog', gamestate.players[0], 5, warriorImages, wargogsItems)
+
+  // board[1][1].occupiedBy = new Archer(gameLogic.getNextId(gamestate), 1, 1, 12, 0, 8, 11, 16, 'arrow', gamestate.players[0], 5, archerImages, arrowsItems)
+  // board[1][0].occupiedBy = new Archer(gameLogic.getNextId(gamestate), 1, 0, 12, 0, 8, 11, 16, 'longarrow', gamestate.players[0], 5, archerImages, longarrowsItems)
+  // board[2][1].occupiedBy = new Wizard(gameLogic.getNextId(gamestate), 2, 1, 10, 16, 6, 18, 12, 'sarusek', gamestate.players[0], 3, wizardImages, saruseksItems)
+
+
+
+  addUnitToBoard(gamestate, board, {
+    class: Warrior,
+    x: 3,
+    y: 2,
+    hp: 25,
+    mp: 0,
+    str: 11,
+    int: 12,
+    dex: 9,
+    name: 'Hank',
+    player: gamestate.players[1],
+    speed: 4,
+    images: warriorImages,
+    items: hanksItems
+  })
 
   // board[3][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 4, 30, 0, 8, 12, 13, 'Joe', gamestate.players[1], 3, warriorImages, joesItems)
-  board[3][2].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 2, 25, 0, 11, 12, 9, 'Hank', gamestate.players[1], 4, warriorImages, hanksItems)
+  // board[3][2].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 3, 2, 25, 0, 11, 12, 9, 'Hank', gamestate.players[1], 4, warriorImages, hanksItems)
+
+
+
+  addUnitToBoard(gamestate, board, {
+    class: Warrior,
+    x: 0,
+    y: 4,
+    hp: 25,
+    mp: 0,
+    str: 22,
+    int: 12,
+    dex: 9,
+    name: 'Thunder',
+    player: gamestate.players[2],
+    speed: 4,
+    images: warriorImages,
+    items: thundersItems
+  })
 
   // board[0][2].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 4, 4, 25, 0, 25, 12, 9, 'Lightning', gamestate.players[2], 4, warriorImages, lightningsItems)
-  board[0][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 4, 25, 0, 22, 12, 9, 'Thunder', gamestate.players[2], 4, warriorImages, thundersItems)
+  // board[0][4].occupiedBy = new Warrior(gameLogic.getNextId(gamestate), 0, 4, 25, 0, 22, 12, 9, 'Thunder', gamestate.players[2], 4, warriorImages, thundersItems)
 
   return board
 }
