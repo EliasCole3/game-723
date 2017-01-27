@@ -7,6 +7,7 @@ import 'chosen/chosen.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/dist/css/bootstrap.css'
 import keypress                  from 'keypress.js'
+import bootstrap                 from 'bootstrap.js'
 import * as gameLogic            from './js/game-logic.es6'
 import * as viewLogic            from './js/view-logic.es6'
 import * as utils                from 'utilities.es6'
@@ -119,6 +120,20 @@ $(() => {
   //   // $('#wrapper').trigger($.Event('keydown', { keyCode: 40}))
   //   // $('body').simulateKeyPress(40)
   // }
+
+  $('#test-modal-and-autotyping').click(e => {
+    // viewLogic.showModal() ?
+    $('#modal').modal('show')
+    viewLogic.autotype({
+      selector: '#modal-body',
+      message: 'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
+      speed: 40,
+      callback: () => {
+        console.log('all done!')
+        $('#modal').modal('hide')
+      }
+    })
+  })
 
 
 

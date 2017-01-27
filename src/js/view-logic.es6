@@ -2,6 +2,7 @@
 
 import * as windows from 'windows.es6'
 import * as utils from 'utilities.es6'
+import bootstrap from 'bootstrap.js'
 
 function render(selector, gamestate) {
   $(selector).html(generateBoardHtml(gamestate))
@@ -227,7 +228,65 @@ function showUnitInfo(unit) {
   $('#context-window-content').html(htmlString)
 }
 
-export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo}
+// insertModalHtml("modal-lg")
+// insertModalHtml("modal-sm")
+// insertModalHtml()
+// http://getbootstrap.com/javascript/#modals
+function insertModalHtml(size) {
+  let _size = size === undefined ? "" : size
+  let htmlString = `
+  <div id='modal' class='modal fade'>
+    <div class='modal-dialog ${_size}'>
+      <div class='modal-content'>
+        <div id='modal-header' class='modal-header'></div>
+        <div id='modal-body' class='modal-body'>
+          <div id='form-target'></div>
+        </div>
+        <div id='modal-footer' class='modal-footer'></div>
+      </div>
+    </div>
+  </div>`
+
+  $('#modal-holder').html(htmlString)
+}
+
+function autotype(params) {
+  if(params.index === undefined) params.index = 0
+
+  if(params.index === params.message.length - 1) {
+    params.callback()
+    return
+  }
+
+  $(params.selector).append(params.message[params.index])
+  params.index++
+
+  setTimeout(() => {
+    autotype(params)
+  }, params.speed)
+}
+
+
+
+/*
+
+show.bs.modal
+shown.bs.modal
+hide.bs.modal
+hidden.bs.modal
+
+ */
+// $('#modal').on('shown.bs.modal', function(e) {
+
+// })
+
+// $('#form-target').html(htmlString)
+
+// $('#modal').modal('hide')
+// $('#modal').modal('show')
+
+
+export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype}
 
 
 

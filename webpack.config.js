@@ -29,7 +29,8 @@ module.exports = {
         test: [
           /web_modules\/chosen\/.+\.(jsx|js)$/,
           /web_modules\/datetime-picker\/bootstrap-datetimepicker.js/,
-          /node_modules\/moment\/locale/
+          /node_modules\/moment\/locale/,
+          /web_modules\/bootstrap.js/
         ],
         loader: 'imports?jQuery=jquery,$=jquery,this=>window'
       },
