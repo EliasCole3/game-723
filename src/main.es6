@@ -114,6 +114,33 @@ $(() => {
 
   })
 
+  $('#test-arrow').click(e => {
+    $('#start').click()
+    utils.sleep(250)
+
+    $('#1-0-image').click()
+    utils.sleep(250)
+
+    $('#action-move').click()
+    utils.sleep(250)
+
+    movement.moveRight(gamestate)
+    movement.moveRight(gamestate)
+    render(gamestate)
+    utils.sleep(250)
+
+    $('#action-confirm-move').click()
+    utils.sleep(250)
+
+    $('#action-attack').click()
+    utils.sleep(250)
+
+    $('#3-2-image').click()
+    utils.sleep(250)
+
+    $('#action-confirm-attack').click()
+  })
+
   // Not allowed for browser security. I'm just used to having it from selenium driver tests
   // function pressDownArrow() {
   //   // $('body').trigger($.Event('keydown', { keyCode: 40}))
@@ -132,6 +159,18 @@ $(() => {
         console.log('all done!')
         $('#modal').modal('hide')
       }
+    })
+  })
+
+  $('#test-floating-text').click(e => {
+    viewLogic.addFloatingText({
+      startCoordinates: {
+        x: 300,
+        y: 300
+      },
+      color: '#0000ff',
+      size: '14px',
+      text: 'slooooooowed'
     })
   })
 

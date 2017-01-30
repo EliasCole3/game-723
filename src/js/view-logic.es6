@@ -3,6 +3,7 @@
 import * as windows from 'windows.es6'
 import * as utils from 'utilities.es6'
 import bootstrap from 'bootstrap.js'
+import greensock from 'greensock.js'
 
 function render(selector, gamestate) {
   $(selector).html(generateBoardHtml(gamestate))
@@ -266,6 +267,26 @@ function autotype(params) {
   }, params.speed)
 }
 
+function addFloatingText(params) {
+  let randomId = utils.getRandomIntInclusive(10000000, 99999999)
+  let styles = [
+    `color: ${params.color}`,
+    `top: ${params.startCoordinates.y}px`,
+    `left: ${params.startCoordinates.x}px`,
+    `position: absolute`,
+    `font-size: ${params.size}`
+  ]
+  let htmlString = `<span id='${randomId}' class='' style='${styles.join(';')}'>${params.text}</span>`
+  $('#wrapper').append(htmlString)
+  let newRandomParticle = $(`#${randomId}`)
+  TweenMax.to(newRandomParticle, 2, {
+    top: `${params.startCoordinates.y - 20}px`,
+    opacity: '.5',
+    onComplete: () => {
+      newRandomParticle.remove()
+    }
+  })
+}
 
 
 /*
@@ -286,7 +307,7 @@ hidden.bs.modal
 // $('#modal').modal('show')
 
 
-export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype}
+export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype, addFloatingText}
 
 
 

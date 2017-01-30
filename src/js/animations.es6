@@ -1,8 +1,9 @@
 'use strict'
 
-import greensock from 'greensock.js'
-import * as utils from 'utilities.es6'
+import greensock                   from 'greensock.js'
+import * as utils                  from 'utilities.es6'
 import { Warrior, Archer, Wizard } from 'classes.es6'
+import img_arrow                   from '../images/weapons/arrow.png'
 
 // function test() {
 
@@ -41,6 +42,32 @@ function attack(gamestate, attacker, defender) {
     })
   }
 
+  if(attacker instanceof Archer) {
+
+    // let yDiff = attackerBox.top - defenderBox.top
+    // let xDiff = attackerBox.left - defenderBox.left
+
+    let yDiff = defenderBox.top - attackerBox.top
+    let xDiff = defenderBox.left - attackerBox.left
+
+    let degree = Math.atan2(yDiff, xDiff) * 180 / Math.PI
+    degree += 90
+    console.log(degree)
+
+    addShotArrow({
+      startCoordinates: {
+        x: attackerBox.left,
+        y: attackerBox.top
+      },
+      endCoordinates: {
+        x: defenderBox.left,
+        y: defenderBox.top
+      },
+      degree: degree
+    })
+
+  }
+
 
 
 }
@@ -48,7 +75,25 @@ function attack(gamestate, attacker, defender) {
 
 
 
-
+function addShotArrow(params) {
+  let randomId = utils.getRandomIntInclusive(10000000, 99999999)
+  let styles = [
+    `top: ${params.startCoordinates.y}px`,
+    `left: ${params.startCoordinates.x}px`,
+    `position: absolute`,
+    `transform: rotate(${params.degree}deg)`
+  ]
+  let htmlString = `<img id='${randomId}' style='${styles.join(';')}' src='${img_arrow}'>`
+  $('#wrapper').append(htmlString)
+  let newRandomParticle = $(`#${randomId}`)
+  TweenMax.to(newRandomParticle, 2, {
+    top: `${params.endCoordinates.y}px`,
+    left: `${params.endCoordinates.x}px`,
+    onComplete: () => {
+      newRandomParticle.remove()
+    }
+  })
+}
 
 
 
