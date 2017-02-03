@@ -115,6 +115,7 @@ $(() => {
 
   })
 
+
   $('#test-arrow').click(e => {
     $('#start').click()
 
@@ -136,6 +137,24 @@ $(() => {
       $('#action-confirm-attack').click()
     }, 250)
   })
+
+  $('#test-attack').click(e => {
+    $('#start').click()
+
+    $('#0-1-image').click()
+    $('#action-move').click()
+    movement.moveDown(gamestate)
+    movement.moveDown(gamestate)
+    render(gamestate)
+    $('#action-confirm-move').click()
+
+    $('#action-attack').click()
+    $('#0-4-image').click()
+    setTimeout(() => {
+      $('#action-confirm-attack').click()
+    }, 250)
+  })
+
 
   // Not allowed for browser security. I'm just used to having it from selenium driver tests
   // function pressDownArrow() {
@@ -166,7 +185,6 @@ $(() => {
 
     viewLogic.messageSet({
       selector: '#modal-body',
-      // selector: '#body',
       messages: [
         'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
         'Ut ennui culpa shoreditch. Vinyl seitan commodo, skateboard edison bulb squid reprehenderit laborum health goth tumeric tumblr venmo.',

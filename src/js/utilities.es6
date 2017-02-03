@@ -163,6 +163,45 @@ function unitsAreAllies(unitA, unitB) {
   return unitA.player === unitB.player
 }
 
+function getUnitMidpoint(unit) {
+  let unitBox = document.getElementById(`${unit.x}-${unit.y}`).getBoundingClientRect()
+  let unitMidX = (unitBox.right + unitBox.left) / 2
+  let unitMidY = (unitBox.top + unitBox.bottom) / 2
+  return {x: unitMidX, y: unitMidY}
+}
 
 
-export {forEachCell, anyOfTheseAreTrue, allOfTheseAreTrue, getUnitfromSelectedUnitId, getCellFromCoordinates, forAllUnits, forAllUnitsOfAPlayer, allPlayersUnitsAreDead, getRandomIntInclusive, getRandomAngleInRadians, currentPlayersTurnIsOver, allPlayersHaveTakenTheirTurn, sleep, arrayContainsObject, unitsAreAllies}
+export {
+  forEachCell,
+  anyOfTheseAreTrue,
+  allOfTheseAreTrue,
+  getUnitfromSelectedUnitId,
+  getCellFromCoordinates,
+  forAllUnits,
+  forAllUnitsOfAPlayer,
+  allPlayersUnitsAreDead,
+  getRandomIntInclusive,
+  getRandomAngleInRadians,
+  currentPlayersTurnIsOver,
+  allPlayersHaveTakenTheirTurn,
+  sleep,
+  arrayContainsObject,
+  unitsAreAllies,
+  getUnitMidpoint
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

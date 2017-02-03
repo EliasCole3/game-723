@@ -1,6 +1,7 @@
 'use strict'
 
 import * as utils from 'utilities.es6'
+import * as viewLogic from './view-logic.es6'
 
 function getNextId(gamestate) {
   return gamestate.nextUnitId++
@@ -21,6 +22,18 @@ function attack(attacker, defender, gamestate) {
   if(defender.current.hp <= 0) {
     battleResults.messages.push(`${defender.name} is knocked unconscious`)
   }
+
+  let defenderMidpoint = utils.getUnitMidpoint(defender)
+
+  viewLogic.addFloatingText({
+    startCoordinates: {
+      x: defenderMidpoint.x - 15,
+      y: defenderMidpoint.y - 15
+    },
+    color: 'red',
+    size: '24px',
+    text: `-${damageAmount}`
+  })
 
   return battleResults
 }

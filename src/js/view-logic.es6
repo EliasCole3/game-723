@@ -268,6 +268,21 @@ function autotype(params) {
   }, params.speed)
 }
 
+/*
+
+  Example Usage:
+
+  viewLogic.addFloatingText({
+    startCoordinates: {
+      x: 300,
+      y: 300
+    },
+    color: '#0000ff',
+    size: '14px',
+    text: 'slooooooowed'
+  })
+
+ */
 function addFloatingText(params) {
   let randomId = utils.getRandomIntInclusive(10000000, 99999999)
   let styles = [
@@ -281,7 +296,7 @@ function addFloatingText(params) {
   $('#wrapper').append(htmlString)
   let newRandomParticle = $(`#${randomId}`)
   TweenMax.to(newRandomParticle, 2, {
-    top: `${params.startCoordinates.y - 20}px`,
+    top: `${params.startCoordinates.y - 40}px`,
     opacity: '.5',
     onComplete: () => {
       newRandomParticle.remove()
@@ -291,25 +306,29 @@ function addFloatingText(params) {
 
 /*
 
-Example usage:
+  Example usage:
 
-messageSet({
-  selector: '#modal-body',
-  messages: [
-    'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
-    'Ut ennui culpa shoreditch. Vinyl seitan commodo, skateboard edison bulb squid reprehenderit laborum health goth tumeric tumblr venmo.',
-    'Blog banh mi aute reprehenderit, vape portland PBR&B letterpress poutine freegan eiusmod fanny pack.',
-    'Actually typewriter dolore, master cleanse cardigan kombucha quis VHS succulents odio stumptown echo park.'
-  ],
-  speed: 40,
-  callback: () => {
-    console.log('all done!')
-    $('#modal').modal('hide')
-  }
-})
+  messageSet({
+    selector: '#modal-body',
+    messages: [
+      'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
+      'Ut ennui culpa shoreditch. Vinyl seitan commodo, skateboard edison bulb squid reprehenderit laborum health goth tumeric tumblr venmo.',
+      'Blog banh mi aute reprehenderit, vape portland PBR&B letterpress poutine freegan eiusmod fanny pack.',
+      'Actually typewriter dolore, master cleanse cardigan kombucha quis VHS succulents odio stumptown echo park.'
+    ],
+    speed: 40,
+    callback: () => {
+      console.log('all done!')
+      $('#modal').modal('hide')
+    }
+  })
 
  */
 function messageSet(params) {
+  // default parameters
+  if(!params.speed) params.speed = 40
+  if(!params.selector) params.selector = '#modal-body'
+
   params.listener = new keypress.Listener()
 
   // Generator, which produces an iterator

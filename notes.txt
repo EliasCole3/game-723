@@ -1,12 +1,8 @@
 todo
 ------------------------
-Add medium and large bootstrap modals
 clear unit info after turn switch
-Unit class wrapper (e.g. getWarrior({param: value, etc.}))
 redo board terrain mapping(to a 2d array?)
-Make it so units can pass other friendly units on the board(occupiedBy goes to array)
 extract internal tests out into a module
-arrow attack animation for archer(transparent image rotation)
 ------------------------
 
 
@@ -15,7 +11,6 @@ Design Decisions
 Everything is driven from the data structure - the game board
 Full team turns or speed based turns?
  - full teams. So speed is just number of squares to move
-
 ---------------------
 
 
@@ -25,7 +20,6 @@ Title screen
 Dialog
 Sound
 Animations
-
 ---------------------
 
 
@@ -46,5 +40,9 @@ After every unit is finished, prompt to change turns
 ---------------------
 
 
+Resources
+----------------------------
+http://keycode.info/
+----------------------------
 
 
