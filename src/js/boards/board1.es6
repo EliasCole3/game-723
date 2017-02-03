@@ -1,6 +1,7 @@
 'use strict'
 
-import img_mountains    from '../../images/app/terrain/moutains.png' // this is stupid. Every time I try to fix it webpack won't cooperate -_-
+// import img_mountains    from '../../images/app/terrain/mountains.png' // this is stupid. Every time I try to fix it webpack won't cooperate -_-
+import img_mountains    from '../../images/app/terrain/mountainmf.png'
 import img_water        from '../../images/app/terrain/water.png'
 import img_plains       from '../../images/app/terrain/plains.png'
 import img_woods        from '../../images/app/terrain/woods.png'
@@ -43,6 +44,10 @@ function getBoard(gamestate) {
   board[5][0] = new Cell(5, 0, 'mountains', img_mountains, false)
   board[6][1] = new Cell(6, 1, 'mountains', img_mountains, false)
   board[6][2] = new Cell(6, 2, 'mountains', img_mountains, false)
+  board[4][0] = new Cell(4, 0, 'mountains', img_mountains, false)
+  board[5][1] = new Cell(5, 1, 'mountains', img_mountains, false)
+  board[5][2] = new Cell(5, 2, 'mountains', img_mountains, false)
+  board[4][1] = new Cell(4, 1, 'mountains', img_mountains, false)
 
 
   let wargogsItems = {

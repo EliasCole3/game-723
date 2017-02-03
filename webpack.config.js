@@ -2,7 +2,7 @@ let CopyWebpackPlugin = require('copy-webpack-plugin')
 let path              = require('path')
 
 module.exports = {
-  entry: ['./src/entryPoint.js'],
+  entry: ['babel-polyfill', './src/entryPoint.js'],
   output: {
     path: './dist',
     filename: 'bundle.js'

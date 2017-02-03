@@ -54,7 +54,8 @@ let gamestate = {
   moveRevertCoordinates: {
     x: null,
     y: null
-  }
+  },
+  showingMessageSet: false
 }
 
 
@@ -162,6 +163,58 @@ $(() => {
     })
   })
 
+  function* getMessageSetIterator(params) {
+    let index = 0
+
+    while(index < params.messages.length) {
+      yield params.messages[index++]
+    }
+
+    // if(params.messages[index]) {
+    //   yield params.messages[index]
+    //   index++
+    //   // console.log(index)
+    // }
+  }
+
+  let messageSet = getMessageSetIterator({messages: [
+    'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
+    'Ut ennui culpa shoreditch. Vinyl seitan commodo, skateboard edison bulb squid reprehenderit laborum health goth tumeric tumblr venmo.',
+    'Blog banh mi aute reprehenderit, vape portland PBR&B letterpress poutine freegan eiusmod fanny pack.',
+    'Actually typewriter dolore, master cleanse cardigan kombucha quis VHS succulents odio stumptown echo park.'
+  ]})
+
+  $('#test-message-set').click(e => {
+
+    // console.log(messageSet.next())
+    // console.log(messageSet.next().value)
+    let nextValue = messageSet.next()
+    if(nextValue.done === false) {
+      console.log(nextValue.value)
+    } else {
+      console.log('iterator finished!')
+    }
+
+    // $('#modal').modal('show')
+    // // viewLogic.messageSet({
+    // messageSet({
+    //   selector: '#modal-body',
+    //   messages: [
+    //     'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
+    //     'Ut ennui culpa shoreditch. Vinyl seitan commodo, skateboard edison bulb squid reprehenderit laborum health goth tumeric tumblr venmo.',
+    //     'Blog banh mi aute reprehenderit, vape portland PBR&B letterpress poutine freegan eiusmod fanny pack.',
+    //     'Actually typewriter dolore, master cleanse cardigan kombucha quis VHS succulents odio stumptown echo park.'
+    //   ],
+    //   speed: 40,
+    //   callback: () => {
+    //     console.log('all done!')
+    //     $('#modal').modal('hide')
+    //   }
+    // })
+
+
+  })
+
   $('#test-floating-text').click(e => {
     viewLogic.addFloatingText({
       startCoordinates: {
@@ -178,6 +231,22 @@ $(() => {
 
 })
 
+// function messageSet(params) {
+//   $('#modal').modal('show')
+
+//   viewLogic.autotype({
+//     selector: params.selector,
+//     message: 'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
+//     speed: 40,
+//     callback: () => {
+//       $('#modal').modal('hide')
+//     }
+//   })
+// }
+
+function nextMessageInMessageSet(gamestate) {
+
+}
 
 
 function startHandler(gamestate) {
@@ -238,6 +307,12 @@ function setKeyboardHandlers(gamestate) {
     on_keyup: (e, countPressed, autoRepeat) => {
       viewLogic.removePlayerIndicators(gamestate)
       render(gamestate)
+    }
+  })
+
+  listener.simple_combo('space', () => {
+    if(gamestate.showingMessageSet) {
+      nextMessageInMessageSet(gamestate)
     }
   })
 
