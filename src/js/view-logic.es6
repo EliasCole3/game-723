@@ -1,9 +1,10 @@
 'use strict'
 
 import * as windows from 'windows.es6'
-import * as utils from 'utilities.es6'
-import bootstrap from 'bootstrap.js'
-import greensock from 'greensock.js'
+import * as utils   from 'utilities.es6'
+import bootstrap    from 'bootstrap.js'
+import greensock    from 'greensock.js'
+import keypress     from 'keypress.js'
 
 function render(selector, gamestate) {
   $(selector).html(generateBoardHtml(gamestate))
@@ -255,7 +256,7 @@ function autotype(params) {
   if(params.index === undefined) params.index = 0
 
   if(params.index === params.message.length - 1) {
-    params.callback()
+    if(params.callback) params.callback()
     return
   }
 
@@ -288,6 +289,78 @@ function addFloatingText(params) {
   })
 }
 
+/*
+
+Example usage:
+
+messageSet({
+  selector: '#modal-body',
+  messages: [
+    'Thundercats polaroid twee subway tile, four loko +1 plaid four dollar toast. Ut ennui culpa shoreditch.',
+    'Ut ennui culpa shoreditch. Vinyl seitan commodo, skateboard edison bulb squid reprehenderit laborum health goth tumeric tumblr venmo.',
+    'Blog banh mi aute reprehenderit, vape portland PBR&B letterpress poutine freegan eiusmod fanny pack.',
+    'Actually typewriter dolore, master cleanse cardigan kombucha quis VHS succulents odio stumptown echo park.'
+  ],
+  speed: 40,
+  callback: () => {
+    console.log('all done!')
+    $('#modal').modal('hide')
+  }
+})
+
+ */
+function messageSet(params) {
+  params.listener = new keypress.Listener()
+
+  // Generator, which produces an iterator
+  function* getMessageSetIterator(params) {
+    let index = 0
+
+    while(index < params.messages.length) {
+      yield params.messages[index++]
+    }
+  }
+
+  params.messageSet = getMessageSetIterator(params)
+
+  // always do it once, because it's a message set
+  let tempAutotypeValues = addNextMessageInMessageSet(params)
+
+  params.listener.simple_combo('space', () => {
+
+    // remove the last box
+    tempAutotypeValues.box.remove()
+
+    // create the new box and start autotyping
+    tempAutotypeValues = addNextMessageInMessageSet(params)
+
+  })
+}
+
+function addNextMessageInMessageSet(params) {
+  let randomId = utils.getRandomIntInclusive(10000000, 99999999)
+  let htmlString = `<span id='${randomId}'></span>`
+  $(params.selector).append(htmlString)
+  let tempAutotypeBox = $(`#${randomId}`)
+
+  let nextMessage = params.messageSet.next()
+
+  if(nextMessage.done === true) {
+
+    // otherwise the spacebar handlers start building up. Equivalent to $('').off()
+    params.listener.reset()
+
+    if(params.callback) params.callback()
+  } else {
+    autotype({
+      selector: `#${randomId}`,
+      message: nextMessage.value,
+      speed: params.speed
+    })
+  }
+
+  return {box: tempAutotypeBox, message: nextMessage}
+}
 
 /*
 
@@ -307,7 +380,7 @@ hidden.bs.modal
 // $('#modal').modal('show')
 
 
-export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype, addFloatingText}
+export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype, addFloatingText, messageSet}
 
 
 
