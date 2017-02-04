@@ -286,9 +286,25 @@ function setKeyboardHandlers(gamestate) {
     }
   })
 
-  listener.simple_combo('space', () => {
-    if(gamestate.showingMessageSet) {
-      nextMessageInMessageSet(gamestate)
+  listener.simple_combo('a', () => {
+    if(gamestate.currentMode === 'default') {
+      actionAttack(gamestate)
+    }
+  })
+
+  listener.simple_combo('m', () => {
+    if(gamestate.currentMode === 'default') {
+      actionMove(gamestate)
+    }
+  })
+
+  listener.simple_combo('enter', () => {
+    if(gamestate.currentMode === 'move') {
+      confirmMove(gamestate)
+    }
+
+    if(gamestate.currentMode === 'attack') {
+      confirmAttack(gamestate)
     }
   })
 
@@ -431,8 +447,34 @@ function setActionsWindow_BasicActions(gamestate) {
 
   $('#actions-window-content').html(htmlString)
 
-  actionButtonHandlers_BasicActions(gamestate)
+  $('#action-attack').click(e => {
+    actionAttack(gamestate)
+  })
+
+  $('#action-move').click(e => {
+    actionMove(gamestate)
+  })
+
+  // other basic actions...
 }
+
+function actionAttack(gamestate) {
+  let unit = utils.getUnitfromSelectedUnitId(gamestate)
+  showWeaponRange(unit, gamestate)
+  gamestate.currentMode = 'attack'
+  setActionsWindow_CancelAttack(gamestate)
+}
+
+function actionMove(gamestate) {
+  let unit = utils.getUnitfromSelectedUnitId(gamestate)
+  gamestate.moveRevertCoordinates.x = unit.x
+  gamestate.moveRevertCoordinates.y = unit.y
+  showUnitMoveRange(unit, gamestate)
+  gamestate.currentMode = 'move'
+  setActionsWindow_Moving(gamestate)
+}
+
+
 
 function setActionsWindow_CancelAttack(gamestate) {
   let htmlString = ``
@@ -449,7 +491,10 @@ function setActionsWindow_ConfirmAttack(gamestate) {
   $('#actions-window-content').html(htmlString)
 
   actionButtonHandlers_CancelAttack(gamestate)
-  actionButtonHandlers_ConfirmAttack(gamestate)
+
+  $('#action-confirm-attack').click(e => {
+    confirmAttack(gamestate)
+  })
 }
 
 function setActionsWindow_Moving(gamestate) {
@@ -459,7 +504,10 @@ function setActionsWindow_Moving(gamestate) {
   $('#actions-window-content').html(htmlString)
 
   actionButtonHandlers_CancelMove(gamestate)
-  actionButtonHandlers_ConfirmMove(gamestate)
+
+  $('#action-confirm-move').click(e => {
+    confirmMove(gamestate)
+  })
 }
 
 
@@ -468,25 +516,6 @@ function setActionsWindow_Moving(gamestate) {
 //
 // Handlers
 //
-function actionButtonHandlers_BasicActions(gamestate) {
-  $('#action-attack').click(e => {
-    let unit = utils.getUnitfromSelectedUnitId(gamestate)
-    showWeaponRange(unit, gamestate)
-    gamestate.currentMode = 'attack'
-    setActionsWindow_CancelAttack(gamestate)
-  })
-
-  $('#action-move').click(e => {
-    let unit = utils.getUnitfromSelectedUnitId(gamestate)
-    gamestate.moveRevertCoordinates.x = unit.x
-    gamestate.moveRevertCoordinates.y = unit.y
-    showUnitMoveRange(unit, gamestate)
-    gamestate.currentMode = 'move'
-    setActionsWindow_Moving(gamestate)
-  })
-
-  // other basic actions...
-}
 
 function actionButtonHandlers_CancelAttack(gamestate) {
   $('#action-cancel-attack').click(e => {
@@ -516,74 +545,67 @@ function actionButtonHandlers_CancelMove(gamestate) {
   })
 }
 
-function actionButtonHandlers_ConfirmAttack(gamestate) {
-  $('#action-confirm-attack').click(e => {
-    let attacker = gamestate.board[gamestate.selectedCell.x][gamestate.selectedCell.y].occupiedBy
-    let defender = gamestate.board[gamestate.selectedCellSecondary.x][gamestate.selectedCellSecondary.y].occupiedBy
+function confirmAttack(gamestate) {
+  let attacker = gamestate.board[gamestate.selectedCell.x][gamestate.selectedCell.y].occupiedBy
+  let defender = gamestate.board[gamestate.selectedCellSecondary.x][gamestate.selectedCellSecondary.y].occupiedBy
 
-    // check for empty square
+  // check for empty square
 
-    animations.attack(gamestate, attacker, defender)
+  animations.attack(gamestate, attacker, defender)
 
-    let battleResults = gameLogic.attack(attacker, defender, gamestate)
+  let battleResults = gameLogic.attack(attacker, defender, gamestate)
 
-    attacker.hasTakenAction = true
+  attacker.hasTakenAction = true
 
-    battleResults.messages.forEach(x => {
-      logMessage(x)
-    })
+  battleResults.messages.forEach(x => {
+    logMessage(x)
+  })
 
-    clearSelectors(gamestate)
+  clearSelectors(gamestate)
 
-    clearWeaponRangeIndicators(gamestate)
+  clearWeaponRangeIndicators(gamestate)
 
-    gamestate.players.forEach(player => {
-      if(utils.allPlayersUnitsAreDead(player, gamestate)) {
-        player.disabled = true
-      }
-    })
-
-    if(utils.currentPlayersTurnIsOver(gamestate)) {
-      endTurn(gamestate)
+  gamestate.players.forEach(player => {
+    if(utils.allPlayersUnitsAreDead(player, gamestate)) {
+      player.disabled = true
     }
+  })
 
+  if(utils.currentPlayersTurnIsOver(gamestate)) {
+    endTurn(gamestate)
+  }
+
+  gamestate.currentMode = 'default'
+
+  render(gamestate)
+
+  setActionsWindow_Empty(gamestate)
+
+
+  // win condition
+
+  let numberOfDisabledPlayers = gamestate.players.filter(x => {
+    return x.disabled
+  }).length
+
+  if(numberOfDisabledPlayers === gamestate.players.length-1) {
+    alert(`game over! ${gamestate.currentPlayer.handle} won!`)
+  }
+}
+
+function confirmMove(gamestate) {
+  let unit = utils.getUnitfromSelectedUnitId(gamestate)
+  let cell = utils.getCellFromCoordinates(unit.x, unit.y, gamestate)
+  if(cell.unitMovingThrough === null) { // unit is not occupying someone else's square
     gamestate.currentMode = 'default'
-
+    clearMoveRangeIndicators(gamestate)
+    unit.hasMoved = true
+    setActionsWindow_BasicActions(gamestate)
     render(gamestate)
-
-    setActionsWindow_Empty(gamestate)
-
-
-    // win condition
-
-    let numberOfDisabledPlayers = gamestate.players.filter(x => {
-      return x.disabled
-    }).length
-
-    if(numberOfDisabledPlayers === gamestate.players.length-1) {
-      alert(`game over! ${gamestate.currentPlayer.handle} won!`)
-    }
-  })
+  } else {
+    console.log('can\'t place a unit on top of another unit')
+  }
 }
-
-function actionButtonHandlers_ConfirmMove(gamestate) {
-  $('#action-confirm-move').click(e => {
-    let unit = utils.getUnitfromSelectedUnitId(gamestate)
-    let cell = utils.getCellFromCoordinates(unit.x, unit.y, gamestate)
-    if(cell.unitMovingThrough === null) { // unit is not occupying someone else's square
-      gamestate.currentMode = 'default'
-      clearMoveRangeIndicators(gamestate)
-      unit.hasMoved = true
-      setActionsWindow_BasicActions(gamestate)
-      render(gamestate)
-    } else {
-      console.log('can\'t place a unit on top of another unit')
-    }
-
-  })
-}
-
-
 
 
 
