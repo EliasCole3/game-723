@@ -35,12 +35,12 @@ let gamestate = {
   players: [player1, player2, player3],
   nextUnitId: 1,
   selectedCell: {
-    x: null,
-    y: null
+    x: 0,
+    y: 0
   },
   selectedCellSecondary: {
-    x: null,
-    y: null
+    x: 0,
+    y: 0
   },
   board: null,
   boardsize: {
@@ -250,27 +250,20 @@ function setKeyboardHandlers(gamestate) {
   })
 
   listener.simple_combo('left', () => {
-    movement.moveLeft(gamestate)
-    render(gamestate)
-    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
+    handleArrowKeyInput(gamestate, 'left')
   })
 
   listener.simple_combo('right', () => {
-    movement.moveRight(gamestate)
-    render(gamestate)
-    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
+    // debugger
+    handleArrowKeyInput(gamestate, 'right')
   })
 
   listener.simple_combo('up', () => {
-    movement.moveUp(gamestate)
-    render(gamestate)
-    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
+    handleArrowKeyInput(gamestate, 'up')
   })
 
   listener.simple_combo('down', () => {
-    movement.moveDown(gamestate)
-    render(gamestate)
-    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
+    handleArrowKeyInput(gamestate, 'down')
   })
 
   listener.register_combo({
@@ -310,23 +303,83 @@ function setKeyboardHandlers(gamestate) {
 
 }
 
+function handleArrowKeyInput(gamestate, direction) {
+
+  // if we're moving, move the unit
+  if(gamestate.currentMode === 'move') {
+
+    switch(direction) {
+      case 'left':
+        movement.moveLeft(gamestate)
+        break
+
+      case 'right':
+        movement.moveRight(gamestate)
+        break
+
+      case 'up':
+        movement.moveUp(gamestate)
+        break
+
+      case 'down':
+        movement.moveDown(gamestate)
+        break
+    }
+
+    render(gamestate)
+    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
+  } else {
+    let coords = getSelectorCoordinatesBasedOnGameMode(gamestate)
+
+    // modifier for direction
+    switch(direction) {
+      case 'left':
+        coords.x--
+        break
+
+      case 'right':
+        coords.x++
+        break
+
+      case 'up':
+        coords.y--
+        break
+
+      case 'down':
+        coords.y++
+        break
+    }
+
+    if(utils.cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, coords.x, coords.y)) {
+      cellSelected(gamestate, coords.x, coords.y)
+    }
+  }
+
+}
+
+function getSelectorCoordinatesBasedOnGameMode(gamestate) {
+  let coords = {}
+
+  // if we're doing something, we're moving the secondary selector(the red one)
+  if(gamestate.currentMode === 'attack' || gamestate.currentMode === 'item' || gamestate.currentMode === 'spell') {
+    coords.x = gamestate.selectedCellSecondary.x
+    coords.y = gamestate.selectedCellSecondary.y
+
+  // otherwise we're just moving the selector around
+  } else {
+    coords.x = gamestate.selectedCell.x
+    coords.y = gamestate.selectedCell.y
+  }
+
+  return coords
+}
+
 function setNonBoardHandlers(gamestate) {
 
   $('#end-turn').click(e => {
     endTurn(gamestate)
   })
 
-  // $('#disable-player-1').click(e => {
-  //   gamestate.players[0].disabled = true
-  // })
-
-  // $('#disable-player-2').click(e => {
-  //   gamestate.players[1].disabled = true
-  // })
-
-  // $('#disable-player-3').click(e => {
-  //   gamestate.players[2].disabled = true
-  // })
 }
 
 function endTurn(gamestate) {
@@ -360,50 +413,50 @@ function endTurn(gamestate) {
 
 function setHandlers(gamestate) {
   $('.cell').on('click', e => {
-
     let cell = $(e.currentTarget)
     let x = +cell.attr('data-x')
     let y = +cell.attr('data-y')
-    console.log('cell clicked, coordinates: ', x, y)
-
-    if(gamestate.currentMode === 'default') {
-
-      gamestate.selectedCell.x = x
-      gamestate.selectedCell.y = y
-
-      render(gamestate)
-
-      if(gamestate.board[x][y].occupiedBy) {
-        unitClicked(x, y, gamestate)
-      } else {
-        setActionsWindow_Empty(gamestate)
-      }
-    }
-
-    if(gamestate.currentMode === 'attack') {
-      gamestate.selectedCellSecondary.x = x
-      gamestate.selectedCellSecondary.y = y
-
-      render(gamestate)
-
-      let cell = utils.getCellFromCoordinates(x, y, gamestate)
-
-      if(cell.indicator === 'indicator-weapon-range') {
-        setActionsWindow_ConfirmAttack(gamestate)
-      }
-    }
-
-    // necessary?
-    if(gamestate.currentMode === 'move') {
-
-    }
-
-    if(gamestate.currentMode === 'item') {
-
-    }
-
+    // console.log('cell clicked, coordinates: ', x, y)
+    cellSelected(gamestate, x, y)
   })
+}
 
+function cellSelected(gamestate, x, y) {
+  if(gamestate.currentMode === 'default') {
+
+    gamestate.selectedCell.x = x
+    gamestate.selectedCell.y = y
+
+    render(gamestate)
+
+    if(gamestate.board[x][y].occupiedBy) {
+      unitClicked(x, y, gamestate)
+    } else {
+      setActionsWindow_Empty(gamestate)
+    }
+  }
+
+  if(gamestate.currentMode === 'attack') {
+    gamestate.selectedCellSecondary.x = x
+    gamestate.selectedCellSecondary.y = y
+
+    render(gamestate)
+
+    let cell = utils.getCellFromCoordinates(x, y, gamestate)
+
+    if(cell.indicator === 'indicator-weapon-range') {
+      setActionsWindow_ConfirmAttack(gamestate)
+    }
+  }
+
+  // necessary?
+  if(gamestate.currentMode === 'move') {
+
+  }
+
+  if(gamestate.currentMode === 'item') {
+
+  }
 }
 
 function unitClicked(x, y, gamestate) {
@@ -463,6 +516,10 @@ function actionAttack(gamestate) {
   showWeaponRange(unit, gamestate)
   gamestate.currentMode = 'attack'
   setActionsWindow_CancelAttack(gamestate)
+
+  // this is so the secondary cursor will start of where you left your unit
+  gamestate.selectedCellSecondary.x = gamestate.selectedCell.x
+  gamestate.selectedCellSecondary.y = gamestate.selectedCell.y
 }
 
 function actionMove(gamestate) {
@@ -561,7 +618,7 @@ function confirmAttack(gamestate) {
     logMessage(x)
   })
 
-  clearSelectors(gamestate)
+  // clearSelectors(gamestate)
 
   clearWeaponRangeIndicators(gamestate)
 
@@ -591,6 +648,8 @@ function confirmAttack(gamestate) {
   if(numberOfDisabledPlayers === gamestate.players.length-1) {
     alert(`game over! ${gamestate.currentPlayer.handle} won!`)
   }
+
+  console.log(gamestate.selectedCell)
 }
 
 function confirmMove(gamestate) {

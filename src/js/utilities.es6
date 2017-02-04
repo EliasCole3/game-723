@@ -170,6 +170,25 @@ function getUnitMidpoint(unit) {
   return {x: unitMidX, y: unitMidY}
 }
 
+function cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, x, y) {
+  let conditions = [
+    x < 0,
+    x > gamestate.boardsize.x-1,
+    y < 0,
+    y > gamestate.boardsize.y-1
+  ]
+
+  // x and y start off null
+  conditions.push(x === null)
+  conditions.push(y === null)
+
+  if(anyOfTheseAreTrue(conditions)) {
+    return false
+  }
+
+  return true
+}
+
 
 export {
   forEachCell,
@@ -187,7 +206,8 @@ export {
   sleep,
   arrayContainsObject,
   unitsAreAllies,
-  getUnitMidpoint
+  getUnitMidpoint,
+  cellCoordinatesAreWithWorldBoundariesAndNotNull
 }
 
 
