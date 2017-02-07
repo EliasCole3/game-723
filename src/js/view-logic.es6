@@ -255,7 +255,7 @@ function insertModalHtml(size) {
 function autotype(params) {
   if(params.index === undefined) params.index = 0
 
-  if(params.index === params.message.length - 1) {
+  if(params.index === params.message.length) {
     if(params.callback) params.callback()
     return
   }

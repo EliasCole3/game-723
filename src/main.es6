@@ -236,6 +236,24 @@ function startHandler(gamestate) {
 
   gamestate.board = getBoard1(gamestate)
 
+  $('#modal').modal('show')
+
+    viewLogic.messageSet({
+      selector: '#modal-body',
+      messages: [
+        '3000 years ago...',
+        'In the age of yore...',
+        'When magick run amok...',
+        'And you could make your destiny with the steel strapped to your back...',
+        'Trouble brewed...',
+        '/s'
+      ],
+      speed: 40,
+      callback: () => {
+        $('#modal').modal('hide')
+      }
+    })
+
   render(gamestate)
 }
 
