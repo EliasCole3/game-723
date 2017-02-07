@@ -7,7 +7,7 @@ function getNextId(gamestate) {
   return gamestate.nextUnitId++
 }
 
-function attack(attacker, defender, gamestate) {
+function attack(gamestate, attacker, defender) {
   let battleResults = {}
   battleResults.messages = []
 

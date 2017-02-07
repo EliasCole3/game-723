@@ -3,22 +3,22 @@
 import * as utils from 'utilities.es6'
 
 function moveLeft(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'left', gamestate)
+  move(gamestate, gamestate.selectedCell.x, gamestate.selectedCell.y, 'left')
 }
 
 function moveRight(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'right', gamestate)
+  move(gamestate, gamestate.selectedCell.x, gamestate.selectedCell.y, 'right')
 }
 
 function moveUp(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'up', gamestate)
+  move(gamestate, gamestate.selectedCell.x, gamestate.selectedCell.y, 'up')
 }
 
 function moveDown(gamestate) {
-  move(gamestate.selectedCell.x, gamestate.selectedCell.y, 'down', gamestate)
+  move(gamestate, gamestate.selectedCell.x, gamestate.selectedCell.y, 'down')
 }
 
-function move(x, y, direction, gamestate) {
+function move(gamestate, x, y, direction) {
   if(gamestate.currentMode !== 'move') return
 
   let newX = x

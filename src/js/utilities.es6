@@ -55,7 +55,7 @@ function getUnitfromSelectedUnitId(gamestate) {
   return unit
 }
 
-function getCellFromCoordinates(x, y, gamestate) {
+function getCellFromCoordinates(gamestate, x, y) {
   if(gamestate.board[x] && gamestate.board[x][y]) {
     return gamestate.board[x][y]
   } else {
@@ -76,7 +76,7 @@ function forAllUnits(gamestate, callback) {
   }
 }
 
-function forAllUnitsOfAPlayer(player, gamestate, callback) {
+function forAllUnitsOfAPlayer(gamestate, player, callback) {
   for(let x=0; x<gamestate.boardsize.x; x++) {
     for(let y=0; y<gamestate.boardsize.y; y++) {
       let cell = gamestate.board[x][y]
@@ -88,12 +88,12 @@ function forAllUnitsOfAPlayer(player, gamestate, callback) {
   }
 }
 
-function allPlayersUnitsAreDead(player, gamestate) {
+function allPlayersUnitsAreDead(gamestate, player) {
   // if(player.handle === 'Oprah Windfury') debugger
 
   let unitsAreDead = true
 
-  forAllUnitsOfAPlayer(player, gamestate, unit => {
+  forAllUnitsOfAPlayer(gamestate, player, unit => {
     if(unit.current.hp !== 0) unitsAreDead = false
   })
 
@@ -189,6 +189,22 @@ function cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, x, y) {
   return true
 }
 
+function getSelectorCoordinatesBasedOnGameMode(gamestate) {
+  let coords = {}
+
+  // if we're doing something, we're moving the secondary selector(the red one)
+  if(gamestate.currentMode === 'attack' || gamestate.currentMode === 'item' || gamestate.currentMode === 'spell') {
+    coords.x = gamestate.selectedCellSecondary.x
+    coords.y = gamestate.selectedCellSecondary.y
+
+  // otherwise we're just moving the selector around
+  } else {
+    coords.x = gamestate.selectedCell.x
+    coords.y = gamestate.selectedCell.y
+  }
+
+  return coords
+}
 
 export {
   forEachCell,
@@ -207,7 +223,8 @@ export {
   arrayContainsObject,
   unitsAreAllies,
   getUnitMidpoint,
-  cellCoordinatesAreWithWorldBoundariesAndNotNull
+  cellCoordinatesAreWithWorldBoundariesAndNotNull,
+  getSelectorCoordinatesBasedOnGameMode
 }
 
 

@@ -59,12 +59,12 @@ function generateBoardHtml(gamestate) {
       }
 
       // primary selector
-      if(cellIsSelected(cell, gamestate)) {
+      if(cellIsSelected(gamestate, cell)) {
         htmlString += `<span class='selector default-selector'></span>`
       }
 
       // context sensitive selector, for attacking, moving, etc.
-      if(cellIsSelectedSecondary(cell, gamestate)) {
+      if(cellIsSelectedSecondary(gamestate, cell)) {
         if(gamestate.currentMode === 'attack') {
           htmlString += `<span class='selector attack-selector'></span>`
         }
@@ -119,12 +119,12 @@ function addGeneralAnimations(gamestate) {
   addIndicatorAnimationToPage('move-range', '8e0404', '02e002')
 }
 
-function cellIsSelected(cell, gamestate) {
+function cellIsSelected(gamestate, cell) {
   if(cell.x === gamestate.selectedCell.x && cell.y === gamestate.selectedCell.y) return true
   return false
 }
 
-function cellIsSelectedSecondary(cell, gamestate) {
+function cellIsSelectedSecondary(gamestate, cell) {
   if(cell.x === gamestate.selectedCellSecondary.x && cell.y === gamestate.selectedCellSecondary.y) return true
   return false
 }
