@@ -381,6 +381,53 @@ function addNextMessageInMessageSet(params) {
   return {box: tempAutotypeBox, message: nextMessage}
 }
 
+function unitSays(params) {
+
+  let unit
+  utils.forAllUnits(params.gamestate, x => {
+    if(x.name === params.unitName) unit = x
+  })
+
+  if(!unit) console.log('unit name not found in unitSays()')
+
+  let unitMidpoint = utils.getUnitMidpoint(unit)
+
+  let randomId = utils.getRandomIntInclusive(10000000, 99999999)
+
+  console.log(unit)
+  console.log(unitMidpoint.x)
+  console.log(unitMidpoint.y)
+  console.log('')
+
+  let styles = [
+    `top: ${unitMidpoint.y - 20}px`,
+    `left: ${unitMidpoint.x + 20}px`,
+    `width: 200px`,
+    `height: 80px`,
+    `position: absolute`,
+    `background-color: white`
+  ]
+
+  let id = `unit-dialogue-box-${randomId}`
+
+  let htmlString = `<span id='${id}' style='${styles.join(';')}'></span>`
+
+  $('#wrapper').append(htmlString)
+
+  messageSet({
+    selector: `#${id}`,
+    messages: params.messages,
+    speed: 40,
+    callback: () => {
+      $(`#${id}`).remove()
+      params.callback()
+    }
+  })
+
+}
+
+
+
 /*
 
 show.bs.modal
@@ -399,7 +446,7 @@ hidden.bs.modal
 // $('#modal').modal('show')
 
 
-export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype, addFloatingText, messageSet}
+export {render, addPlayerAnimations, addGeneralAnimations, setInitialMessages, createWindows, addPlayerIndicators, removePlayerIndicators, addCurrentPlayerBorderToBoard, showUnitInfo, autotype, addFloatingText, messageSet, unitSays}
 
 
 

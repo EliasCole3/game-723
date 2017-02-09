@@ -47,7 +47,7 @@ let gamestate = {
     x: 7,
     y: 10
   },
-  units: [],
+  units: [], // I don't think this is used
   round: 1,
   selectedUnitId: null,
   currentMode: 'default',
@@ -236,27 +236,60 @@ function startHandler(gamestate) {
 
   gamestate.board = getBoard1(gamestate)
 
-  $('#modal').modal('show')
+  // $('#modal').modal('show')
+  //   viewLogic.messageSet({
+  //     selector: '#modal-body',
+  //     messages: [
+  //       '3000 years ago... (press space to continue)',
+  //       'In the age of yore...',
+  //       'When magick run amok...',
+  //       'And you could make your destiny with the steel strapped to your back...',
+  //       'Trouble brewed...',
+  //       '/s'
+  //     ],
+  //     speed: 40,
+  //     callback: () => {
+  //       $('#modal').modal('hide')
 
-    viewLogic.messageSet({
-      selector: '#modal-body',
-      messages: [
-        '3000 years ago...',
-        'In the age of yore...',
-        'When magick run amok...',
-        'And you could make your destiny with the steel strapped to your back...',
-        'Trouble brewed...',
-        '/s'
-      ],
-      speed: 40,
-      callback: () => {
-        $('#modal').modal('hide')
-      }
-    })
+  //     }
+  //   })
 
   render(gamestate)
+
+  // this is silly.
+  // Maybe I can add in a delay to render?
+  // More directly, I probably need to tie into a 'dom finished rendering' event and stop assuming dom updates are instantaneous
+  setTimeout(() => {
+    viewLogic.unitSays({
+      gamestate: gamestate,
+      unitName: 'sarusek',
+      messages: [
+        'Back foul bandits!',
+        'yarrrr!!'
+      ],
+      callback: () => { console.log('done') }
+    })
+  }, 100)
+
 }
 
+// function dialogue1() {
+//   viewLogic.unitSays({gamestate, unit, [
+//     'Back foul bandits!'
+//   ], () => {
+//     dialogue2({gamestate, unit, [], ()=> {
+
+//     }})
+//   }})
+// }
+
+// function dialogue2(params) {
+//   viewLogic.unitSays({gamestate, unit, [
+//     'Back foul bandits!'
+//   ], () => {
+
+//   }})
+// }
 
 
 function setKeyboardHandlers(gamestate) {
