@@ -384,6 +384,7 @@ function addNextMessageInMessageSet(params) {
 function unitSays(params) {
 
   let unit
+
   utils.forAllUnits(params.gamestate, x => {
     if(x.name === params.unitName) unit = x
   })
@@ -393,11 +394,6 @@ function unitSays(params) {
   let unitMidpoint = utils.getUnitMidpoint(unit)
 
   let randomId = utils.getRandomIntInclusive(10000000, 99999999)
-
-  console.log(unit)
-  console.log(unitMidpoint.x)
-  console.log(unitMidpoint.y)
-  console.log('')
 
   let styles = [
     `top: ${unitMidpoint.y - 20}px`,
@@ -420,7 +416,7 @@ function unitSays(params) {
     speed: 40,
     callback: () => {
       $(`#${id}`).remove()
-      params.callback()
+      if(params.callback) params.callback()
     }
   })
 

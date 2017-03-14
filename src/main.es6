@@ -11,6 +11,7 @@ import bootstrap                 from 'bootstrap.js'
 import * as gameLogic            from './js/game-logic.es6'
 import * as viewLogic            from './js/view-logic.es6'
 import * as utils                from 'utilities.es6'
+import * as triggers             from 'triggers.es6'
 import * as movement             from 'movement.es6'
 import * as animations           from 'animations.es6'
 import { Player }                from './js/classes.es6'
@@ -253,23 +254,46 @@ function startHandler(gamestate) {
 
   //     }
   //   })
+  //
+
+
+  // $('#modal').modal('show')
+  //   viewLogic.messageSet({
+  //     selector: '#modal-body',
+  //     messages: [
+  //       'Somewhere under a lost and lonely hill of grim and foreboding aspect lies a labyrinthine crypt.',
+  //       'It is filled with terrible traps and not a few strange and ferocious monsters to slay the unwary.',
+  //       'It is filled with rich treasures both precious and magical,',
+  //       'but in addition to the aforementioned guardians,',
+  //       'there is said to be a demi-lich who still wards his final haunt.'
+  //     ],
+  //     speed: 40,
+  //     callback: () => {
+  //       $('#modal').modal('hide')
+
+  //       render(gamestate)
+
+  //       setTimeout(() => {
+  //         viewLogic.unitSays({
+  //           gamestate: gamestate,
+  //           unitName: 'sarusek',
+  //           messages: [
+  //             'Back foul bandits!',
+  //             'yarrrr!!'
+  //           ],
+  //           callback: () => { console.log('done') }
+  //         })
+  //       }, 100)
+
+  //     }
+  //   })
 
   render(gamestate)
 
   // this is silly.
   // Maybe I can add in a delay to render?
   // More directly, I probably need to tie into a 'dom finished rendering' event and stop assuming dom updates are instantaneous
-  setTimeout(() => {
-    viewLogic.unitSays({
-      gamestate: gamestate,
-      unitName: 'sarusek',
-      messages: [
-        'Back foul bandits!',
-        'yarrrr!!'
-      ],
-      callback: () => { console.log('done') }
-    })
-  }, 100)
+
 
 }
 
@@ -449,6 +473,8 @@ function endTurn(gamestate) {
 }
 
 function setBaseHandlers(gamestate) {
+  $('.cell').off('click')
+
   $('.cell').on('click', e => {
     let cell = $(e.currentTarget)
     let x = +cell.attr('data-x')
@@ -457,7 +483,9 @@ function setBaseHandlers(gamestate) {
     cellSelected(gamestate, x, y)
   })
 
-  $('#end-turn').click(e => {
+  $('#end-turn').off('click')
+
+  $('#end-turn').on('click', e => {
     endTurn(gamestate)
   })
 }
@@ -656,6 +684,13 @@ function confirmAttack(gamestate) {
 
   clearWeaponRangeIndicators(gamestate)
 
+  triggers.checkTriggers({
+    state: 'unit just attacked',
+    gamestate: gamestate,
+    attacker: attacker,
+    defender: defender
+  })
+
   gamestate.players.forEach(player => {
     if(utils.allPlayersUnitsAreDead(gamestate, player)) {
       player.disabled = true
@@ -674,7 +709,6 @@ function confirmAttack(gamestate) {
 
 
   // win condition
-
   let numberOfDisabledPlayers = gamestate.players.filter(x => {
     return x.disabled
   }).length
@@ -682,8 +716,6 @@ function confirmAttack(gamestate) {
   if(numberOfDisabledPlayers === gamestate.players.length-1) {
     alert(`game over! ${gamestate.currentPlayer.handle} won!`)
   }
-
-  console.log(gamestate.selectedCell)
 }
 
 function confirmMove(gamestate) {
@@ -695,6 +727,14 @@ function confirmMove(gamestate) {
     unit.hasMoved = true
     setActionsWindow_BasicActions(gamestate)
     render(gamestate)
+
+    triggers.checkTriggers({
+      state: 'unit just moved',
+      gamestate: gamestate,
+      unit: unit,
+      cell: cell
+    })
+
   } else {
     console.log('can\'t place a unit on top of another unit')
   }
