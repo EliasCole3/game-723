@@ -15,7 +15,8 @@ spells.push(new Spell(
   'burning',
   {
     'default': fireball
-  }
+  },
+  'single'
 ))
 
 spells.push(new Spell(
@@ -25,7 +26,12 @@ spells.push(new Spell(
   'slowed',
   {
     'default': iceShard
-  }
+  },
+  [
+    ['0', '1', '0'],
+    ['1', '1', '1'],
+    ['0', '1', '0']
+  ]
 ))
 
 export {

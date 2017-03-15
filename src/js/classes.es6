@@ -119,12 +119,13 @@ class Item {
 
 class Spell {
 
-  constructor(id, name, damage, effect, images={},) {
+  constructor(id, name, damage, effect, images={}, areaOfEffect) {
     this.id = id
     this.name = name
     this.damage = damage
     this.effect = effect
     this.images = images
+    this.areaOfEffect = areaOfEffect
   }
 }
 
