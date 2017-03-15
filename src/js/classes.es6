@@ -117,6 +117,20 @@ class Item {
 
 }
 
+class Spell {
+
+  constructor(id, name, damage, effect, images={},) {
+    this.id = id
+    this.name = name
+    this.damage = damage
+    this.effect = effect
+    this.images = images
+  }
+}
+
+
+
+
 function addUnitToBoard(gamestate, board, params) {
   board[params.x][params.y].occupiedBy = new params.class (
     gameLogic.getNextId(gamestate),
@@ -142,6 +156,6 @@ function addUnitToBoard(gamestate, board, params) {
 
 
 
-export {Cell, Unit, Warrior, Archer, Wizard, Player, addUnitToBoard}
+export {Cell, Unit, Warrior, Archer, Wizard, Player, addUnitToBoard, Spell}
 
 

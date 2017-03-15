@@ -3,6 +3,16 @@ todo
 clear unit info after turn switch
 redo board terrain mapping(to a 2d array?)
 extract internal tests out into a module
+Convert messaging functions from callbacks to promises
+Use weapon/item objects instead of strings
+
+Items
+Spells
+Sound
+Multiplayer
+AI
+Testing
+Polish
 ------------------------
 
 
@@ -44,5 +54,24 @@ Resources
 ----------------------------
 http://keycode.info/
 ----------------------------
+
+
+Scenario
+ - board
+ - messaging
+ - triggers
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

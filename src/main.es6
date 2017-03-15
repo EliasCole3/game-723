@@ -6,17 +6,18 @@ import 'chosen/chosen.jquery'
 import 'chosen/chosen.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/dist/css/bootstrap.css'
-import keypress                  from 'keypress.js'
-import bootstrap                 from 'bootstrap.js'
-import * as gameLogic            from './js/game-logic.es6'
-import * as viewLogic            from './js/view-logic.es6'
-import * as utils                from 'utilities.es6'
-import * as triggers             from 'triggers.es6'
-import * as movement             from 'movement.es6'
-import * as animations           from 'animations.es6'
-import { Player }                from './js/classes.es6'
-import { getBoard as getBoard1 } from './js/boards/board1.es6'
-
+import keypress                    from 'keypress.js'
+import bootstrap                   from 'bootstrap.js'
+import * as gameLogic              from './js/game-logic.es6'
+import * as viewLogic              from './js/view-logic.es6'
+import * as utils                  from 'utilities.es6'
+import * as triggers               from 'triggers.es6'
+import * as movement               from 'movement.es6'
+import * as animations             from 'animations.es6'
+import { Player }                  from './js/classes.es6'
+import { getBoard as getBoard1 }   from './js/boards/board1.es6'
+import { Warrior, Archer, Wizard } from 'classes.es6'
+import { spells }                  from 'spells.es6'
 
 
 let config = {
@@ -555,17 +556,39 @@ function setActionsWindow_Empty(gamestate) {
 
 function setActionsWindow_BasicActions(gamestate) {
   let unit = utils.getUnitfromSelectedUnitId(gamestate)
-  let moveDisabled = unit.hasMoved ? 'disabled' : ''
-  let actionDisabled = unit.hasTakenAction ? 'disabled' : ''
+
+  let moveDisabled = ''
+  let attackDisabled = ''
+  let defendDisabled = ''
+  let itemsDisabled = ''
+  let magicDisabled = 'disabled'
+  let specialDisabled = ''
+
+  if(unit.hasMoved) {
+    moveDisabled = 'disabled'
+  }
+
+  if(unit.hasTakenAction) {
+    let attackDisabled = 'disabled'
+    let defendDisabled = 'disabled'
+    let itemsDisabled = 'disabled'
+    let magicDisabled = 'disabled'
+    let specialDisabled = 'disabled'
+  }
+
+  // magic is only for wizards
+  if(unit instanceof Wizard) {
+    magicDisabled = ''
+  }
 
   let htmlString = ``
   htmlString += `<button id='action-move' class='btn btn-medium' ${moveDisabled}>Move</button>`
-  htmlString += `<button id='action-attack' class='btn btn-medium' ${actionDisabled}>Attack</button>`
-  htmlString += `<button id='action-defend' class='btn btn-medium' ${actionDisabled}>Defend</button>`
-  htmlString += `<button id='action-items' class='btn btn-medium' ${actionDisabled}>Items</button>`
-  htmlString += `<button id='action-magic' class='btn btn-medium' ${actionDisabled}>Magic</button>`
-  htmlString += `<button id='action-special-talent' class='btn btn-medium' ${actionDisabled}>Special Talent</button>`
-  htmlString += `<button id='end-turn' class='btn btn-medium' ${actionDisabled}>Temporary - End Turn</button>`
+  htmlString += `<button id='action-attack' class='btn btn-medium' ${attackDisabled}>Attack</button>`
+  htmlString += `<button id='action-defend' class='btn btn-medium' ${defendDisabled}>Defend</button>`
+  htmlString += `<button id='action-items' class='btn btn-medium' ${itemsDisabled}>Items</button>`
+  htmlString += `<button id='action-magic' class='btn btn-medium' ${magicDisabled}>Magic</button>`
+  htmlString += `<button id='action-special-talent' class='btn btn-medium' ${specialDisabled}>Special Talent</button>`
+  // htmlString += `<button id='end-turn' class='btn btn-medium' ${actionDisabled}>Temporary - End Turn</button>`
 
   $('#actions-window-content').html(htmlString)
 
@@ -575,6 +598,10 @@ function setActionsWindow_BasicActions(gamestate) {
 
   $('#action-move').click(e => {
     actionMove(gamestate)
+  })
+
+  $('#action-magic').click(e => {
+    actionMagic(gamestate)
   })
 
   // other basic actions...
@@ -620,11 +647,54 @@ function setActionsWindow_Moving(gamestate) {
   })
 }
 
+function setActionsWindow_SpellList(gamestate) {
+  let htmlString = ``
+
+  let spells = getSpellListForUnit(gamestate)
+
+  spells.forEach(x => {
+    htmlString += `<button id='spell-${x.id}' name='${x.name}' class='btn btn-medium spell-button'>${x.name}<img src='${x.images.default}' height='50' width='50'></button><br>`
+  })
+
+  htmlString += `<button id='action-cancel-magic' class='btn btn-medium'>Cancel Magic</button><br>`
+
+
+  $('#actions-window-content').html(htmlString)
+
+  $('#action-cancel-magic').click(e => {
+    cancelMagic(gamestate)
+  })
+
+  $('.spell-button').click(e => {
+    let element = $(e.currentTarget)
+    let id = element.attr('id').replace(/spell-/g, '')
+    console.log(id)
+  })
+}
+
+function getSpellListForUnit(gamestate) {
+  console.log(spells)
+
+  // todo: add unit breakdown once persistence is added
+
+  return spells
+}
+
 function actionAttack(gamestate) {
   let unit = utils.getUnitfromSelectedUnitId(gamestate)
   showWeaponRange(unit, gamestate)
   gamestate.currentMode = 'attack'
   setActionsWindow_CancelAttack(gamestate)
+
+  // this is so the secondary cursor will start of where you left your unit
+  gamestate.selectedCellSecondary.x = gamestate.selectedCell.x
+  gamestate.selectedCellSecondary.y = gamestate.selectedCell.y
+}
+
+function actionMagic(gamestate) {
+  let unit = utils.getUnitfromSelectedUnitId(gamestate)
+  gamestate.currentMode = 'magic'
+  setActionsWindow_SpellList(gamestate)
 
   // this is so the secondary cursor will start of where you left your unit
   gamestate.selectedCellSecondary.x = gamestate.selectedCell.x
@@ -661,6 +731,11 @@ function cancelMove(gamestate) {
 function cancelAttack(gamestate) {
   gamestate.currentMode = 'default'
   clearWeaponRangeIndicators(gamestate)
+  setActionsWindow_BasicActions(gamestate)
+}
+
+function cancelMagic(gamestate) {
+  gamestate.currentMode = 'default'
   setActionsWindow_BasicActions(gamestate)
 }
 
