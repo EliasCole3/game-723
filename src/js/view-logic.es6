@@ -68,6 +68,10 @@ function generateBoardHtml(gamestate) {
         if(gamestate.currentMode === 'attack') {
           htmlString += `<span class='selector attack-selector'></span>`
         }
+
+        if(gamestate.currentMode === 'magic') {
+          htmlString += `<span class='selector magic-selector'></span>`
+        }
       }
 
       htmlString += `</td>`
@@ -117,6 +121,7 @@ function addPlayerAnimations(gamestate) {
 function addGeneralAnimations(gamestate) {
   addIndicatorAnimationToPage('weapon-range', '8e0404', 'e00202')
   addIndicatorAnimationToPage('move-range', '8e0404', '02e002')
+  addIndicatorAnimationToPage('spell-range', '8e0404', '551a8b')
 }
 
 function cellIsSelected(gamestate, cell) {

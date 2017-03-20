@@ -3,7 +3,7 @@
 import * as utils                from 'utilities.es6'
 import * as animations           from 'animations.es6'
 import { Cell, Unit, Warrior, Archer, Wizard, Player, addUnitToBoard, Spell } from 'classes.es6'
-import fireball       from '../images/spells/fireball.svg'
+import fireball       from '../images/spells/fireball.png'
 import iceShard       from '../images/spells/ice-shard.jpg'
 
 let spells = []

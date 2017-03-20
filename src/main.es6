@@ -52,7 +52,7 @@ let gamestate = {
   units: [], // I don't think this is used
   round: 1,
   selectedUnitId: null,
-  currentMode: 'default',
+  currentMode: 'default', // default, move, attck, magic, item
   moveRevertCoordinates: {
     x: null,
     y: null
@@ -514,9 +514,29 @@ function cellSelected(gamestate, x, y) {
 
     let cell = utils.getCellFromCoordinates(gamestate, x, y)
 
+    // if the currently selected cell is within weapon range
     if(cell.indicator === 'indicator-weapon-range') {
       setActionsWindow_ConfirmAttack(gamestate)
     }
+  }
+
+  if(gamestate.currentMode === 'magic') {
+    gamestate.selectedCellSecondary.x = x
+    gamestate.selectedCellSecondary.y = y
+
+    render(gamestate)
+
+    let cell = utils.getCellFromCoordinates(gamestate, x, y)
+
+    // todo: either I'll be able to attack empty squares, or I'll need a check to see if a unit is in the spell's range
+
+    // if(cell.indicator === 'indicator-spell-range') {
+    //   setActionsWindow_ConfirmSpell(gamestate)
+    // }
+  }
+
+  if(gamestate.currentMode === 'item') {
+
   }
 
   // necessary?
@@ -524,9 +544,6 @@ function cellSelected(gamestate, x, y) {
 
   }
 
-  if(gamestate.currentMode === 'item') {
-
-  }
 }
 
 function unitClicked(x, y, gamestate) {
@@ -632,6 +649,21 @@ function setActionsWindow_ConfirmAttack(gamestate) {
   })
 }
 
+function setActionsWindow_ConfirmSpell(gamestate) {
+  let htmlString = ``
+  htmlString += `<button id='action-cancel-spell' class='btn btn-medium'>Cancel Spell</button>`
+  htmlString += `<button id='action-confirm-spell' class='btn btn-medium'>Confirm Spell</button>`
+  $('#actions-window-content').html(htmlString)
+
+  $('#action-cancel-spell').click(e => {
+    cancelSpell(gamestate)
+  })
+
+  $('#action-confirm-spell').click(e => {
+    confirmSpell(gamestate)
+  })
+}
+
 function setActionsWindow_Moving(gamestate) {
   let htmlString = ``
   htmlString += `<button id='action-cancel-move' class='btn btn-medium'>Cancel Move</button>`
@@ -669,6 +701,8 @@ function setActionsWindow_SpellList(gamestate) {
     let element = $(e.currentTarget)
     let id = element.attr('id').replace(/spell-/g, '')
     console.log(id)
+    showSpellRange(unit, gamestate, id)
+    setActionsWindow_ConfirmSpell(gamestate)
   })
 }
 
@@ -734,6 +768,12 @@ function cancelAttack(gamestate) {
   setActionsWindow_BasicActions(gamestate)
 }
 
+function cancelSpell(gamestate) {
+  gamestate.currentMode = 'magic'
+  clearSpellRangeIndicators(gamestate)
+  setActionsWindow_SpellList(gamestate)
+}
+
 function cancelMagic(gamestate) {
   gamestate.currentMode = 'default'
   setActionsWindow_BasicActions(gamestate)
@@ -793,6 +833,13 @@ function confirmAttack(gamestate) {
   }
 }
 
+function confirmSpell(gamestate) {
+  // todo: core spell stuff
+  console.log('zomg')
+  gamestate.currentMode = 'default'
+  setActionsWindow_Empty(gamestate)
+}
+
 function confirmMove(gamestate) {
   let unit = utils.getUnitfromSelectedUnitId(gamestate)
   let cell = utils.getCellFromCoordinates(gamestate, unit.x, unit.y)
@@ -836,9 +883,40 @@ function showWeaponRange(unit, gamestate) {
   render(gamestate)
 }
 
+function showSpellRange(unit, gamestate, spellId) {
+  let x = gamestate.selectedCell.x
+  let y = gamestate.selectedCell.y
+
+  // todo: actual spell ranges
+  // let coordinates = gameLogic.getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
+  let coordinates = [{x: 3, y: 3}]
+
+  // if(coordinates.length === 0) { console.log('weapon not listed in gameLogic.getCoordinatesForWeaponRange()') }
+
+  coordinates.forEach(coord => {
+    if(gamestate.board[coord.x] && gamestate.board[coord.x][coord.y]) {
+      gamestate.board[coord.x][coord.y].indicator = `indicator-spell-range`
+    }
+  })
+
+  render(gamestate)
+}
+
+
+
 function clearWeaponRangeIndicators(gamestate) {
   utils.forEachCell(gamestate, cell => {
     if(cell.indicator === 'indicator-weapon-range') {
+      cell.indicator = null
+    }
+  })
+
+  render(gamestate)
+}
+
+function clearSpellRangeIndicators(gamestate) {
+  utils.forEachCell(gamestate, cell => {
+    if(cell.indicator === 'indicator-spell-range') {
       cell.indicator = null
     }
   })
