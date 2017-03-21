@@ -57,7 +57,8 @@ let gamestate = {
     x: null,
     y: null
   },
-  showingMessageSet: false
+  showingMessageSet: false,
+  currentSpellId: null // for moving the spell AOE around. Populates when a spell is chosen off the list
 }
 
 
@@ -415,6 +416,7 @@ function handleArrowKeyInput(gamestate, direction) {
     viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   } else {
     let coords = utils.getSelectorCoordinatesBasedOnGameMode(gamestate)
+    // console.log(coords)
 
     // modifier for direction
     switch(direction) {
@@ -434,7 +436,9 @@ function handleArrowKeyInput(gamestate, direction) {
         coords.y++
         break
     }
+    // console.log(coords)
 
+    // console.log(utils.cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, coords.x, coords.y))
     if(utils.cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, coords.x, coords.y)) {
       cellSelected(gamestate, coords.x, coords.y)
     }
@@ -524,11 +528,21 @@ function cellSelected(gamestate, x, y) {
     gamestate.selectedCellSecondary.x = x
     gamestate.selectedCellSecondary.y = y
 
-    render(gamestate)
+    showSpellRange(gamestate)
 
-    let cell = utils.getCellFromCoordinates(gamestate, x, y)
+    // render(gamestate)
+
+
+
 
     // todo: either I'll be able to attack empty squares, or I'll need a check to see if a unit is in the spell's range
+    // for every cell,
+    // if there's a spell indicator
+    // and there's a unit
+    // and they're unfriendly
+    // setActionsWindow_ConfirmSpell
+
+    // let cell = utils.getCellFromCoordinates(gamestate, x, y)
 
     // if(cell.indicator === 'indicator-spell-range') {
     //   setActionsWindow_ConfirmSpell(gamestate)
@@ -539,7 +553,7 @@ function cellSelected(gamestate, x, y) {
 
   }
 
-  // necessary?
+  // todo: move from handleArrowKeyInput() to here
   if(gamestate.currentMode === 'move') {
 
   }
@@ -699,9 +713,11 @@ function setActionsWindow_SpellList(gamestate) {
 
   $('.spell-button').click(e => {
     let element = $(e.currentTarget)
-    let id = element.attr('id').replace(/spell-/g, '')
-    console.log(id)
-    showSpellRange(unit, gamestate, id)
+    let spellId = +element.attr('id').replace(/spell-/g, '')
+    console.log(spellId)
+    gamestate.currentMode = 'magic'
+    gamestate.currentSpellId = spellId
+    showSpellRange(gamestate)
     setActionsWindow_ConfirmSpell(gamestate)
   })
 }
@@ -727,7 +743,6 @@ function actionAttack(gamestate) {
 
 function actionMagic(gamestate) {
   let unit = utils.getUnitfromSelectedUnitId(gamestate)
-  gamestate.currentMode = 'magic'
   setActionsWindow_SpellList(gamestate)
 
   // this is so the secondary cursor will start of where you left your unit
@@ -770,6 +785,7 @@ function cancelAttack(gamestate) {
 
 function cancelSpell(gamestate) {
   gamestate.currentMode = 'magic'
+  gamestate.currentSpellId = null
   clearSpellRangeIndicators(gamestate)
   setActionsWindow_SpellList(gamestate)
 }
@@ -883,15 +899,14 @@ function showWeaponRange(unit, gamestate) {
   render(gamestate)
 }
 
-function showSpellRange(unit, gamestate, spellId) {
-  let x = gamestate.selectedCell.x
-  let y = gamestate.selectedCell.y
+function showSpellRange(gamestate) {
+  clearSpellRangeIndicators(gamestate)
+  let x = gamestate.selectedCellSecondary.x
+  let y = gamestate.selectedCellSecondary.y
 
-  // todo: actual spell ranges
-  // let coordinates = gameLogic.getCoordinatesForWeaponRange(unit.items.equipped.weapon, x, y)
-  let coordinates = [{x: 3, y: 3}]
+  let spell = utils.getSpellFromSpellId(spells, gamestate.currentSpellId)
 
-  // if(coordinates.length === 0) { console.log('weapon not listed in gameLogic.getCoordinatesForWeaponRange()') }
+  let coordinates = gameLogic.getCoordinatesForSpellRange(spell, x, y)
 
   coordinates.forEach(coord => {
     if(gamestate.board[coord.x] && gamestate.board[coord.x][coord.y]) {

@@ -193,7 +193,7 @@ function getSelectorCoordinatesBasedOnGameMode(gamestate) {
   let coords = {}
 
   // if we're doing something, we're moving the secondary selector(the red one)
-  if(gamestate.currentMode === 'attack' || gamestate.currentMode === 'item' || gamestate.currentMode === 'spell') {
+  if(gamestate.currentMode === 'attack' || gamestate.currentMode === 'item' || gamestate.currentMode === 'magic') {
     coords.x = gamestate.selectedCellSecondary.x
     coords.y = gamestate.selectedCellSecondary.y
 
@@ -204,6 +204,28 @@ function getSelectorCoordinatesBasedOnGameMode(gamestate) {
   }
 
   return coords
+}
+
+function getSpellFromSpellId(spells, spellId) {
+  let spell = spells.filter(x => {
+    return x.id === spellId
+  })[0]
+  if(spell === undefined) throw new Error(`getSpellFromSpellId() : failed to find spell with id: ${spellId}`)
+  return spell
+}
+
+function dataTypeOf(value) {
+  if(typeof(value) === 'string') return 'string'
+  if(typeof(value) === 'number') return 'number'
+  if(typeof(value) === 'symbol') return 'symbol'
+  if(typeof(value) === 'boolean') return 'boolean'
+  if(typeof(value) === 'undefined') return 'undefined'
+  if(typeof(value) === 'function') return 'function'
+  if(value === null) return 'null'
+  if(typeof(value) === 'object') {
+    if(Array.isArray(value)) return 'array'
+    return 'object'
+  }
 }
 
 export {
@@ -224,7 +246,9 @@ export {
   unitsAreAllies,
   getUnitMidpoint,
   cellCoordinatesAreWithWorldBoundariesAndNotNull,
-  getSelectorCoordinatesBasedOnGameMode
+  getSelectorCoordinatesBasedOnGameMode,
+  getSpellFromSpellId,
+  dataTypeOf
 }
 
 

@@ -204,6 +204,53 @@ function getCoordinatesForWeaponRange(weapon, x, y) {
   return coordinates
 }
 
+function getCoordinatesForSpellRange(spell, xSelector, ySelector) {
+  let coordinates = []
+
+  if(spell.areaOfEffect === 'single') {
+   coordinates.push({x: xSelector, y: ySelector})
+  } else {
+    /*
+    [
+      ['0', '1', '0'],
+      ['1', 'x', '1'],
+      ['0', '1', '0']
+    ]
+
+    [
+      ['0', '0', '1', '0', '0'],
+      ['0', '1', '1', '1', '0'],
+      ['1', '1', 'x', '1', '1'],
+      ['0', '1', '1', '1', '0'],
+      ['0', '0', '1', '0', '0']
+    ]
+    */
+
+    let midpoint
+
+    spell.areaOfEffect.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if(value === 'x') midpoint = {x: x, y: y}
+      })
+    })
+
+    if(midpoint === undefined) throw new Error(`getCoordinatesForSpellRange() : no midpoint in ${spell.name}'s areaOfEffect`)
+
+    spell.areaOfEffect.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if(value === '1') {
+          let _x = xSelector - (midpoint.x - x)
+          let _y = ySelector - (midpoint.y - y)
+          coordinates.push({x: _x, y: _y})
+        }
+      })
+    })
+
+  }
+
+  return coordinates
+}
+
 function getCoordinatesForMoveRange(gamestate, unit) {
 
   let coordinates = getAvailableMoves(gamestate, unit.x, unit.y, unit.speed)
@@ -297,7 +344,7 @@ function getAvailableMoves(gamestate, x, y, movesLeft, moves=[]) {
 
 
 
-export {getNextId, attack, getCoordinatesForWeaponRange, getCoordinatesForMoveRange}
+export {getNextId, attack, getCoordinatesForWeaponRange, getCoordinatesForSpellRange, getCoordinatesForMoveRange}
 
 
 
