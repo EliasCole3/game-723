@@ -390,60 +390,30 @@ function setKeyboardHandlers(gamestate) {
 }
 
 function handleArrowKeyInput(gamestate, direction) {
+  let coords = utils.getSelectorCoordinatesBasedOnGameMode(gamestate)
 
-  // if we're moving, move the unit
-  if(gamestate.currentMode === 'move') {
+  // modifier for direction
+  switch(direction) {
+    case 'left':
+      coords.x--
+      break
 
-    switch(direction) {
-      case 'left':
-        movement.moveLeft(gamestate)
-        break
+    case 'right':
+      coords.x++
+      break
 
-      case 'right':
-        movement.moveRight(gamestate)
-        break
+    case 'up':
+      coords.y--
+      break
 
-      case 'up':
-        movement.moveUp(gamestate)
-        break
-
-      case 'down':
-        movement.moveDown(gamestate)
-        break
-    }
-
-    render(gamestate)
-    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
-  } else {
-    let coords = utils.getSelectorCoordinatesBasedOnGameMode(gamestate)
-    // console.log(coords)
-
-    // modifier for direction
-    switch(direction) {
-      case 'left':
-        coords.x--
-        break
-
-      case 'right':
-        coords.x++
-        break
-
-      case 'up':
-        coords.y--
-        break
-
-      case 'down':
-        coords.y++
-        break
-    }
-    // console.log(coords)
-
-    // console.log(utils.cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, coords.x, coords.y))
-    if(utils.cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, coords.x, coords.y)) {
-      cellSelected(gamestate, coords.x, coords.y)
-    }
+    case 'down':
+      coords.y++
+      break
   }
 
+  if(utils.cellCoordinatesAreWithWorldBoundariesAndNotNull(gamestate, coords.x, coords.y)) {
+    cellSelected(gamestate, coords.x, coords.y, direction)
+  }
 }
 
 
@@ -495,7 +465,7 @@ function setBaseHandlers(gamestate) {
   })
 }
 
-function cellSelected(gamestate, x, y) {
+function cellSelected(gamestate, x, y, direction) {
   if(gamestate.currentMode === 'default') {
 
     gamestate.selectedCell.x = x
@@ -508,6 +478,29 @@ function cellSelected(gamestate, x, y) {
     } else {
       setActionsWindow_Empty(gamestate)
     }
+  }
+
+  if(gamestate.currentMode === 'move') {
+    switch(direction) {
+      case 'left':
+        movement.moveLeft(gamestate)
+        break
+
+      case 'right':
+        movement.moveRight(gamestate)
+        break
+
+      case 'up':
+        movement.moveUp(gamestate)
+        break
+
+      case 'down':
+        movement.moveDown(gamestate)
+        break
+    }
+
+    render(gamestate)
+    viewLogic.showUnitInfo(utils.getUnitfromSelectedUnitId(gamestate)) // this is here so the unit position in the window will update
   }
 
   if(gamestate.currentMode === 'attack') {
@@ -553,17 +546,10 @@ function cellSelected(gamestate, x, y) {
 
   }
 
-  // todo: move from handleArrowKeyInput() to here
-  if(gamestate.currentMode === 'move') {
-
-  }
-
 }
 
 function unitClicked(x, y, gamestate) {
   let unit = gamestate.board[x][y].occupiedBy
-
-  // console.log(unit)
 
   if(unit.player.username !== gamestate.currentPlayer.username) {
     logMessage('That unit doesn\'t belong to the current player')

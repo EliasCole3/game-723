@@ -2,6 +2,8 @@
 
 import * as utils from 'utilities.es6'
 
+
+// don't refactor this, it'll be useful for higher level code later, like AI
 function moveLeft(gamestate) {
   move(gamestate, gamestate.selectedCell.x, gamestate.selectedCell.y, 'left')
 }
