@@ -5,6 +5,7 @@ import * as animations           from 'animations.es6'
 import { Cell, Unit, Warrior, Archer, Wizard, Player, addUnitToBoard, Spell } from 'classes.es6'
 import fireball       from '../images/spells/fireball.png'
 import iceShard       from '../images/spells/ice-shard.jpg'
+import iceStorm       from '../images/spells/ice-storm.jpeg'
 
 let spells = []
 
@@ -40,7 +41,7 @@ spells.push(new Spell(
   '2d10',
   'slowed',
   {
-    'default': iceShard
+    'default': iceStorm
   },
   [
     ['0', '0', '1', '0', '0'],
