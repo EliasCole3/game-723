@@ -52,7 +52,7 @@ let gamestate = {
   units: [], // I don't think this is used
   round: 1,
   selectedUnitId: null,
-  currentMode: 'default', // default, move, attck, magic, item
+  currentMode: 'default', // default, move, attck, magic, item, casting
   moveRevertCoordinates: {
     x: null,
     y: null
@@ -390,6 +390,7 @@ function setKeyboardHandlers(gamestate) {
 }
 
 function handleArrowKeyInput(gamestate, direction) {
+  // debugger
   let coords = utils.getSelectorCoordinatesBasedOnGameMode(gamestate)
 
   // modifier for direction
@@ -466,6 +467,9 @@ function setBaseHandlers(gamestate) {
 }
 
 function cellSelected(gamestate, x, y, direction) {
+
+  console.log(gamestate.currentMode)
+
   if(gamestate.currentMode === 'default') {
 
     gamestate.selectedCell.x = x
@@ -517,7 +521,7 @@ function cellSelected(gamestate, x, y, direction) {
     }
   }
 
-  if(gamestate.currentMode === 'magic') {
+  if(gamestate.currentMode === 'casting') {
     gamestate.selectedCellSecondary.x = x
     gamestate.selectedCellSecondary.y = y
 
@@ -701,7 +705,7 @@ function setActionsWindow_SpellList(gamestate) {
     let element = $(e.currentTarget)
     let spellId = +element.attr('id').replace(/spell-/g, '')
     console.log(spellId)
-    gamestate.currentMode = 'magic'
+    gamestate.currentMode = 'casting'
     gamestate.currentSpellId = spellId
     showSpellRange(gamestate)
     setActionsWindow_ConfirmSpell(gamestate)
@@ -770,14 +774,17 @@ function cancelAttack(gamestate) {
 }
 
 function cancelSpell(gamestate) {
-  gamestate.currentMode = 'magic'
+  gamestate.currentMode = 'default'
   gamestate.currentSpellId = null
+  gamestate.selectedCellSecondary.x = null
+  gamestate.selectedCellSecondary.y = null
   clearSpellRangeIndicators(gamestate)
   setActionsWindow_SpellList(gamestate)
+  // render(gamestate)
 }
 
 function cancelMagic(gamestate) {
-  gamestate.currentMode = 'default'
+  // gamestate.currentMode = 'default'
   setActionsWindow_BasicActions(gamestate)
 }
 
@@ -893,6 +900,7 @@ function showSpellRange(gamestate) {
   let spell = utils.getSpellFromSpellId(spells, gamestate.currentSpellId)
 
   let coordinates = gameLogic.getCoordinatesForSpellRange(spell, x, y)
+  console.log(coordinates)
 
   coordinates.forEach(coord => {
     if(gamestate.board[coord.x] && gamestate.board[coord.x][coord.y]) {

@@ -193,7 +193,7 @@ function getSelectorCoordinatesBasedOnGameMode(gamestate) {
   let coords = {}
 
   // if we're doing something, we're moving the secondary selector(the red one)
-  if(gamestate.currentMode === 'attack' || gamestate.currentMode === 'item' || gamestate.currentMode === 'magic') {
+  if(gamestate.currentMode === 'attack' || gamestate.currentMode === 'item' || gamestate.currentMode === 'casting') {
     coords.x = gamestate.selectedCellSecondary.x
     coords.y = gamestate.selectedCellSecondary.y
 

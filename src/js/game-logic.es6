@@ -246,6 +246,8 @@ function getCoordinatesForSpellRange(spell, xSelector, ySelector) {
       })
     })
 
+  coordinates.push(midpoint)
+
   }
 
   return coordinates
